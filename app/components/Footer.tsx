@@ -25,7 +25,7 @@ function FooterMenu({
   const {publicStoreDomain} = useRootLoaderData();
 
   return (
-    <nav className="footer-menu" role="navigation">
+    <nav className="footer-menu">
       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
         if (!item.url) return null;
         // if the url is internal, we strip the domain

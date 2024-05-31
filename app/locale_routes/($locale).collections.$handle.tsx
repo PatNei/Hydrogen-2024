@@ -1,4 +1,4 @@
-import { json, type LoaderFunctionArgs } from "@shopify/remix-oxygen";
+import { json, redirect, type LoaderFunctionArgs } from "@shopify/remix-oxygen";
 import { useLoaderData, Link, type MetaFunction } from "@remix-run/react";
 import {
 	Pagination,
@@ -8,32 +8,43 @@ import {
 } from "@shopify/hydrogen";
 import type { ProductItemFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
-import { PRODUCT_ITEM_FRAGMENT } from "./_index";
+import { PRODUCT_ITEM_FRAGMENT } from "~/routes/_index";
 
-export const meta: MetaFunction<typeof loader> = () => {
-	return [{ title: "Hydrogen | Products" }];
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return [{ title: `Hydrogen | ${data?.collection.title ?? ""} Collection` }];
 };
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
+export async function loader({ request, params, context }: LoaderFunctionArgs) {
+	const { handle } = params;
 	const { storefront } = context;
 	const paginationVariables = getPaginationVariables(request, {
 		pageBy: 8,
 	});
 
-	const { products } = await storefront.query(CATALOG_QUERY, {
-		variables: { ...paginationVariables },
+	if (!handle) {
+		return redirect("/collections");
+	}
+
+	const { collection } = await storefront.query(COLLECTION_QUERY, {
+		variables: { handle, ...paginationVariables },
 	});
 
-	return json({ products });
+	if (!collection) {
+		throw new Response(`Collection ${handle} not found`, {
+			status: 404,
+		});
+	}
+	return json({ collection });
 }
 
 export default function Collection() {
-	const { products } = useLoaderData<typeof loader>();
+	const { collection } = useLoaderData<typeof loader>();
 
 	return (
 		<div className="collection">
-			<h1>Products</h1>
-			<Pagination connection={products}>
+			<h1>{collection.title}</h1>
+			<p className="collection-description">{collection.description}</p>
+			<Pagination connection={collection.products}>
 				{({ nodes, isLoading, PreviousLink, NextLink }) => (
 					<>
 						<PreviousLink>
@@ -100,9 +111,10 @@ function ProductItem({
 	);
 }
 
-// NOTE: https://shopify.dev/docs/api/storefront/2024-01/objects/product
-const CATALOG_QUERY = `#graphql
-  query Catalog(
+// NOTE: https://shopify.dev/docs/api/storefront/2022-04/objects/collection
+const COLLECTION_QUERY = `#graphql
+  query Collection(
+    $handle: String!
     $country: CountryCode
     $language: LanguageCode
     $first: Int
@@ -110,17 +122,28 @@ const CATALOG_QUERY = `#graphql
     $startCursor: String
     $endCursor: String
   ) @inContext(country: $country, language: $language) {
-    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {
-      nodes {
-        ...ProductItem
-      }
-      pageInfo {
-        hasPreviousPage
-        hasNextPage
-        startCursor
-        endCursor
+    collection(handle: $handle) {
+      id
+      handle
+      title
+      description
+      products(
+        first: $first,
+        last: $last,
+        before: $startCursor,
+        after: $endCursor
+      ) {
+        nodes {
+          ...ProductItem
+        }
+        pageInfo {
+          hasPreviousPage
+          hasNextPage
+          endCursor
+          startCursor
+        }
       }
     }
-  }
   ${PRODUCT_ITEM_FRAGMENT}
+  }
 ` as const;

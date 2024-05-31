@@ -6,7 +6,8 @@ import {
   type FormProps,
 } from '@remix-run/react';
 import {Image, Money, Pagination} from '@shopify/hydrogen';
-import React, {useRef, useEffect} from 'react';
+import type React from 'react';
+import {useRef, useEffect} from 'react';
 import {applyTrackingParams} from '~/lib/search';
 
 import type {
