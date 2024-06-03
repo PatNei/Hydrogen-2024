@@ -31,9 +31,9 @@ export function Layout({
 }: LayoutProps) {
 	return (
 		<>
-			<CartAside cart={cart} />
+			{/* <CartAside cart={cart} />
 			<SearchAside />
-			<MobileMenuAside menu={header?.menu} shop={header?.shop} />
+			<MobileMenuAside menu={header?.menu} shop={header?.shop} /> */}
 			{header && <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />}
 			<main>{children}</main>
 			<Suspense>
