@@ -11,6 +11,9 @@ const config = {
 	],
 	prefix: "",
 	theme: {
+		fontFamily: {
+			sans: ["Palatino", "Georgia", "Times", "Times New Roman", "serif"],
+		},
 		container: {
 			center: true,
 			padding: "2rem",
