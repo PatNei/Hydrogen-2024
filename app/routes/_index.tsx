@@ -77,7 +77,7 @@ function ProductItem({
 	const variant = product.variants.nodes[0];
 	const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 	return (
-		<div className="flex text-wrap mt-2 break-inside-avoid odd:first:mt-2 odd:my-36 even:my-28 flex-col gap-1">
+		<div className="flex overflow-hidden truncate mt-12 even:mt-14 break-inside-avoid first:my-0 flex-col gap-4">
 			{product.images.nodes.length > 0 ? (
 				product.images.nodes.map((_image, index) => {
 					if (index >= 1) {
@@ -104,12 +104,11 @@ function ProductItem({
 					invisible={false}
 				/>
 			)}
-			<div className="flex max-h-max h-max min-h-min text-balance max-w-full w-full ">
-				<Separator orientation="vertical" className="min-h-full" />
-
-				<p className="h-full w-full">
-					{product.title} adkjhsahjkdasjhkdhj kasdhjkashjkdashjkdahjkshdjks
-				</p>
+			<div className="flex divide-x divide-black flex-row max-h-max h-fit min-h-min text-balance max-w-full w-full align-middle text-middle">
+				<div className="max-w-2 h-full" />
+				<blockquote className="h-full pl-3 leading-line w-full text-pretty">
+					{product.title} adkjhsahjkdasjhkdhjkas dhjkashjkdashjkdahjkshdjks
+				</blockquote>
 			</div>
 		</div>
 	);
@@ -131,7 +130,7 @@ const ProductCard = ({
 	className = "",
 }: CarouselProductItemProps) => {
 	return (
-		<div className="min-h-full h-full w-full">
+		<div className="min-h-full h-full w-full text-nowrap">
 			<div
 				className={`min-w-full max-w-full min-h-full h-full w-full relative ${className}`}
 			>
@@ -159,8 +158,8 @@ const ProductCard = ({
 					</AspectRatio>
 				</Link>
 				<div
-					className="flex
-			transition ease-in-out delay-300 duration-150 flex-col gap-0 opacity-70 bg-slate-600 h-min max-h-min absolute bottom-0 left-0 text-center w-full min-w-full max-w-full text-white"
+					className="hidden peer-hover:flex
+			transition ease-in-out delay-300 duration-150 flex-col gap-0 opacity-90 bg-slate-600 h-min max-h-min absolute bottom-0 left-0 text-center w-full min-w-full max-w-full text-white"
 				>
 					<h1 className="h-full max-h-full">{product.title}</h1>
 					<Money
