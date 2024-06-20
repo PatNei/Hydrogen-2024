@@ -21,9 +21,8 @@ export function applyTrackingParams(
     return resource?.trackingParameters
       ? `?${params}&${resource.trackingParameters}`
       : `?${params}`;
-  } else {
+  }
     return resource?.trackingParameters
       ? `?${resource.trackingParameters}`
       : '';
-  }
 }

@@ -34,7 +34,7 @@ export class AppSession implements HydrogenSession {
       .getSession(request.headers.get('Cookie'))
       .catch(() => storage.getSession());
 
-    return new this(storage, session);
+    return new AppSession(storage, session);
   }
 
   get has() {

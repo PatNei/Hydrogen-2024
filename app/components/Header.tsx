@@ -46,16 +46,21 @@ export function getHeaderNavLinkStyle({
 	return "";
 }
 
-export function Header({ header, isLoggedIn, cart }: HeaderProps) {
+export function Header({
+	header,
+	isLoggedIn,
+	cart,
+	className,
+}: HeaderProps & { className?: string }) {
 	const { shop, menu } = header;
 	const primaryDomainUrl = header.shop.primaryDomain.url;
 	const { publicStoreDomain } = useRootLoaderData();
 
 	return (
-		<div className="flex">
-			<NavigationMenu className="min-w-full max-w-full h-full flex content-start justify-between sm:pl-12">
-				<NavigationMenuList className="flex flex-col w-full content-start text-start justify-start">
-					<NavigationMenuItem className="w-full">
+		<div className={`flex min-w-full max-w-full h-full ${className}`}>
+			<NavigationMenu className="min-w-full max-w-full h-full flex content-start justify-between">
+				<NavigationMenuList className="flex flex-col content-start text-start justify-start">
+					<NavigationMenuItem>
 						<NavigationMenuLink>
 							<NavLink
 								prefetch="intent"
@@ -77,7 +82,7 @@ export function Header({ header, isLoggedIn, cart }: HeaderProps) {
 					<NavigationMenuItem className="">
 						<p>Some text</p>
 					</NavigationMenuItem>
-					<NavigationMenuItem className="flex w-full justify-between">
+					<NavigationMenuItem className="flex justify-between">
 						{(menu || FALLBACK_HEADER_MENU).items.map((item) => {
 							if (!item.url) return null;
 
@@ -91,13 +96,7 @@ export function Header({ header, isLoggedIn, cart }: HeaderProps) {
 							if (url === "/") return;
 							return (
 								<NavigationMenuLink key={`nml-${item.id}`}>
-									<NavLink
-										className={getHeaderNavLinkStyle}
-										end
-										key={item.id}
-										prefetch="intent"
-										to={url}
-									>
+									<NavLink end key={item.id} prefetch="intent" to={url}>
 										<p className="underline font-extralight">{item.title}</p>
 									</NavLink>
 								</NavigationMenuLink>
@@ -105,7 +104,7 @@ export function Header({ header, isLoggedIn, cart }: HeaderProps) {
 						})}
 					</NavigationMenuItem>
 				</NavigationMenuList>
-				<NavigationMenuList className="flex w-full h-full">
+				<NavigationMenuList className="flex">
 					<NavigationMenuItem>
 						<CartMenu cart={cart} />
 					</NavigationMenuItem>

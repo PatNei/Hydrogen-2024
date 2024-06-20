@@ -14,6 +14,7 @@ import {
 import favicon from "./assets/favicon.svg";
 import tailwindStyles from "./tailwind.css?url";
 import { Layout } from "~/components/Layout";
+import { FOOTER_QUERY, HEADER_QUERY } from "./graphql/ShopQuery";
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -43,10 +44,10 @@ export function links() {
 			rel: "preconnect",
 			href: "https://cdn.shopify.com",
 		},
-		{
-			rel: "preconnect",
-			href: "https://shop.app", // TODO: What is this?
-		},
+		// {
+		// 	rel: "preconnect",
+		// 	href: "https://shop.app", // TODO: What is this?
+		// },
 		{ rel: "icon", type: "image/svg+xml", href: favicon },
 	];
 }
@@ -153,73 +154,3 @@ export function ErrorBoundary() {
 		</html>
 	);
 }
-
-const MENU_FRAGMENT = `#graphql
-  fragment MenuItem on MenuItem {
-    id
-    resourceId
-    tags
-    title
-    type
-    url
-  }
-  fragment ChildMenuItem on MenuItem {
-    ...MenuItem
-  }
-  fragment ParentMenuItem on MenuItem {
-    ...MenuItem
-    items {
-      ...ChildMenuItem
-    }
-  }
-  fragment Menu on Menu {
-    id
-    items {
-      ...ParentMenuItem
-    }
-  }
-` as const;
-
-const HEADER_QUERY = `#graphql
-  fragment Shop on Shop {
-    id
-    name
-    description
-    primaryDomain {
-      url
-    }
-    brand {
-      logo {
-        image {
-          url
-        }
-      }
-    }
-  }
-  query Header(
-    $country: CountryCode
-    $headerMenuHandle: String!
-    $language: LanguageCode
-  ) @inContext(language: $language, country: $country) {
-    shop {
-      ...Shop
-    }
-    menu(handle: $headerMenuHandle) {
-      ...Menu
-    }
-  }
-  ${MENU_FRAGMENT}
-` as const;
-
-const FOOTER_QUERY = `#graphql
-  query Footer(
-    $country: CountryCode
-    $footerMenuHandle: String!
-    $language: LanguageCode
-  ) @inContext(language: $language, country: $country) {
-    menu(handle: $footerMenuHandle) {
-      ...Menu
-    }
-  }
-  ${MENU_FRAGMENT}
-` as const;

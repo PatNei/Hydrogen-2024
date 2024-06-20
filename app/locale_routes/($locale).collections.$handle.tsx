@@ -8,7 +8,7 @@ import {
 } from "@shopify/hydrogen";
 import type { ProductItemFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
-import { PRODUCT_ITEM_FRAGMENT } from "~/routes/_index";
+import { PRODUCT_ITEM_FRAGMENT } from "~/graphql/ProductQuery";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [{ title: `Hydrogen | ${data?.collection.title ?? ""} Collection` }];

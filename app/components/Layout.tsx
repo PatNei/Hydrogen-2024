@@ -36,22 +36,29 @@ export function Layout({
 			{/* <CartAside cart={cart} />
 			<SearchAside />
 			<MobileMenuAside menu={header?.menu} shop={header?.shop} /> */}
-			<div className="flex flex-row min-w-screen max-w-screen my-6">
-				<div className="flex content-center justify-center sm:justify-end min-w-[15vw] sm:min-w-[10vw] max-w-[10vw] w-[10vw] h-screen">
-					<ShopIcon header={header} />
+			<div className="flex pt-[10px] gap-2 mt-12 px-2 flex-row max-w-screen min-w-screen w-screen">
+				<div className="flex min-w-[5dvw] w-[5dvw] max-w-[5dvw] sm:max-w-[5dvw] sm:min-w-[5dvw] sm:w-[5dvw] justify-center">
+					<ShopIcon
+						className="sticky w-5 max-h-2 top-0 left-0"
+						header={header}
+					/>
 				</div>
-				<div className="flex flex-col max-width-[90vw] min-width-[90vw] w-[90vw] pr-[5vw] gap-14">
-					{header && (
-						<Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
-					)}
-					<main className="w-full">{children}</main>
+				<div className="w-[90dvw] max-w-[90dvw] pr-4 min-w-[90dvw]">
+					<div className="top-0 left-0 sticky z-10 bg-white min-h-[12dvh]">
+						{header && (
+							<Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
+						)}
+					</div>
+					<main className="">{children}</main>
 				</div>
 			</div>
-			<Suspense>
-				<Await resolve={footer}>
-					{(footer) => <Footer menu={footer?.menu} shop={header?.shop} />}
-				</Await>
-			</Suspense>
+			{/* <div>
+					<Suspense>
+						<Await resolve={footer}>
+							{(footer) => <Footer menu={footer?.menu} shop={header?.shop} />}
+						</Await>
+					</Suspense>
+				</div> */}
 		</>
 	);
 }
@@ -106,27 +113,30 @@ function SearchAside() {
 	);
 }
 
-const ShopIcon = ({ header }: { header: HeaderQuery }) => {
+const ShopIcon = ({
+	header,
+	className,
+}: { header: HeaderQuery; className?: string }) => {
 	return (
 		<NavLink
 			prefetch="intent"
 			to="/"
 			className={(props) => {
-				return `max-h-[10%] max-w-full ${getHeaderNavLinkStyle(props)}`;
+				return `sticky ${className} ${getHeaderNavLinkStyle(props)}`;
 			}}
 			end
 		>
 			{header.shop.brand?.logo?.image?.url ? (
-				<AspectRatio className="" ratio={5 / 1}>
+				<AspectRatio ratio={1 / 1}>
 					<img
+						width={500}
+						height={500}
 						src={header.shop.brand.logo.image.url}
-						width={20}
-						height={20}
 						alt={`Logo for ${header.shop.name}`}
 					/>
 				</AspectRatio>
 			) : (
-				<FaQuestion height={500} width={500} className=" w-full h-full" />
+				<FaQuestion height={500} width={500} className="" />
 			)}
 		</NavLink>
 	);
