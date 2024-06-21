@@ -6,9 +6,12 @@ import {
 	Image,
 	Money,
 } from "@shopify/hydrogen";
-import type { ProductItemFragment } from "storefrontapi.generated";
+import type { ProductFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
-import { PRODUCT_ITEM_FRAGMENT } from "~/graphql/ProductQuery";
+import {
+	CATALOG_QUERY,
+	PRODUCT_ITEM_FRAGMENT,
+} from "~/graphql/products/ProductQuery";
 
 export const meta: MetaFunction<typeof loader> = () => {
 	return [{ title: "Hydrogen | Products" }];
@@ -51,7 +54,7 @@ export default function Collection() {
 	);
 }
 
-function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
+function ProductsGrid({ products }: { products: ProductFragment[] }) {
 	return (
 		<div className="products-grid">
 			{products.map((product, index) => {
@@ -71,7 +74,7 @@ function ProductItem({
 	product,
 	loading,
 }: {
-	product: ProductItemFragment;
+	product: ProductFragment;
 	loading?: "eager" | "lazy";
 }) {
 	const variant = product.variants.nodes[0];
@@ -99,28 +102,3 @@ function ProductItem({
 		</Link>
 	);
 }
-
-// NOTE: https://shopify.dev/docs/api/storefront/2024-01/objects/product
-const CATALOG_QUERY = `#graphql
-  query Catalog(
-    $country: CountryCode
-    $language: LanguageCode
-    $first: Int
-    $last: Int
-    $startCursor: String
-    $endCursor: String
-  ) @inContext(country: $country, language: $language) {
-    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {
-      nodes {
-        ...ProductItem
-      }
-      pageInfo {
-        hasPreviousPage
-        hasNextPage
-        startCursor
-        endCursor
-      }
-    }
-  }
-  ${PRODUCT_ITEM_FRAGMENT}
-` as const;

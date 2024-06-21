@@ -14,7 +14,7 @@ import {
 import favicon from "./assets/favicon.svg";
 import tailwindStyles from "./tailwind.css?url";
 import { Layout } from "~/components/Layout";
-import { FOOTER_QUERY, HEADER_QUERY } from "./graphql/ShopQuery";
+import { FOOTER_QUERY, HEADER_QUERY } from "./graphql/shop/ShopQuery";
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations

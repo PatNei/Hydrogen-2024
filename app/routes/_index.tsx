@@ -1,16 +1,11 @@
 import { json, type LoaderFunctionArgs } from "@shopify/remix-oxygen";
-import { useLoaderData, Link, type MetaFunction } from "@remix-run/react";
-import { Pagination, getPaginationVariables, Money } from "@shopify/hydrogen";
-import type { HydrogenImageProps } from "@shopify/hydrogen-react/Image";
+import { useLoaderData, type MetaFunction } from "@remix-run/react";
+import { Pagination, getPaginationVariables } from "@shopify/hydrogen";
 import type { ProductItemFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
-import placeholderImage from "./assets/placeholder.webp";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { CATALOG_QUERY } from "~/graphql/ProductQuery";
-import { Separator } from "@/components/ui/separator";
+import { CATALOG_QUERY } from "~/graphql/products/ProductQuery";
+import { ProductCard } from "~/components/ProductCard";
 
-const IMAGE_PRODUCT_WIDTH = 1920;
-const IMAGE_PRODUCT_HEIGHT = 1080;
 const AMOUNT_OF_PRODUCTS = 8;
 
 export const meta: MetaFunction<typeof loader> = () => {
@@ -84,24 +79,20 @@ function ProductItem({
 						return;
 					}
 					return (
-						// biome-ignore lint/correctness/useJsxKeyInIterable: <explanation>
-						<>
-							<ProductCard
-								className="first:mt-0"
-								key={`CPI-${_image.id}`}
-								product={product}
-								variantUrl={variantUrl}
-								invisible={false}
-								_image={{ data: _image }}
-							/>
-						</>
+						<ProductCard
+							className="first:mt-0"
+							key={`CPI-${_image.id}`}
+							product={product}
+							variantUrl={variantUrl}
+							productImageProps={{ image: _image, productTitle: product.title }}
+						/>
 					);
 				})
 			) : (
 				<ProductCard
 					product={product}
+					productImageProps={{ productTitle: product.title }}
 					variantUrl={variantUrl}
-					invisible={false}
 				/>
 			)}
 			<div className="flex divide-x divide-black flex-row max-h-max h-fit min-h-min text-balance max-w-full w-full align-middle text-middle">
@@ -113,61 +104,3 @@ function ProductItem({
 		</div>
 	);
 }
-
-type CarouselProductItemProps = {
-	product: ProductItemFragment;
-	variantUrl: string;
-	invisible: boolean;
-	_image?: HydrogenImageProps;
-	className?: string;
-};
-
-const ProductCard = ({
-	product,
-	variantUrl,
-	invisible,
-	_image,
-	className = "",
-}: CarouselProductItemProps) => {
-	return (
-		<div className="min-h-full h-full w-full text-nowrap">
-			<div
-				className={`min-w-full max-w-full min-h-full h-full w-full relative ${className}`}
-			>
-				<Link
-					key={product.id}
-					className="min-w-full max-w-full w-full min-h-full max-h-full h-full peer"
-					prefetch="intent"
-					to={variantUrl}
-					hidden={invisible}
-				>
-					<AspectRatio
-						ratio={4 / 5}
-						className="bg-black absolute top-0 left-0 min-w-full max-w-full w-full min-h-full max-h-full h-full"
-					>
-						<img
-							className="min-w-full max-w-full w-full min-h-full max-h-full h-full absolute top-0 left-0"
-							hidden={invisible}
-							key={_image?.data?.id ?? "image-placeholder"}
-							width={IMAGE_PRODUCT_WIDTH}
-							height={IMAGE_PRODUCT_HEIGHT}
-							alt={`${product.title}-${_image?.data?.altText ?? "placeholder"}`}
-							src={invisible ? "" : _image?.data?.url ?? placeholderImage}
-							aria-hidden={invisible}
-						/>
-					</AspectRatio>
-				</Link>
-				<div
-					className="hidden peer-hover:flex
-			transition ease-in-out delay-300 duration-150 flex-col gap-0 opacity-90 bg-slate-600 h-min max-h-min absolute bottom-0 left-0 text-center w-full min-w-full max-w-full text-white"
-				>
-					<h1 className="h-full max-h-full">{product.title}</h1>
-					<Money
-						className="h-full max-h-full"
-						data={product.priceRange.minVariantPrice}
-					/>
-				</div>
-			</div>
-		</div>
-	);
-};
