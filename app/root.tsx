@@ -12,7 +12,7 @@ import {
 	type ShouldRevalidateFunction,
 } from "@remix-run/react";
 import favicon from "./assets/favicon.svg";
-import tailwindStyles from "./tailwind.css?url";
+import tailwindStyles from "./tailwind.css";
 import { Layout } from "~/components/Layout";
 import { FOOTER_QUERY, HEADER_QUERY } from "./graphql/shop/ShopQuery";
 
@@ -44,10 +44,10 @@ export function links() {
 			rel: "preconnect",
 			href: "https://cdn.shopify.com",
 		},
-		// {
-		// 	rel: "preconnect",
-		// 	href: "https://shop.app", // TODO: What is this?
-		// },
+		{
+			rel: "preconnect",
+			href: "https://shop.app", // TODO: What is this?
+		},
 		{ rel: "icon", type: "image/svg+xml", href: favicon },
 	];
 }

@@ -14,22 +14,38 @@ export type ProductImageProps = {
 };
 
 export const ProductImage = ({
-	productTitle,
 	image,
+	productTitle,
 	invisible = false,
 	width = IMAGE_PRODUCT_WIDTH,
 	height = IMAGE_PRODUCT_HEIGHT,
 	className = "",
 }: ProductImageProps) => {
+	if (!image)
+		return (
+			<ProductImage
+				invisible={invisible}
+				height={height}
+				width={width}
+				productTitle={productTitle}
+				className={className}
+				image={{
+					id: "image-placeholder",
+					url: placeholderImage,
+					altText: "placeholder image",
+				}}
+			/>
+		);
+
 	return (
 		<img
-			className={`min-w-full max-w-full w-full min-h-full max-h-full h-full ${className}`}
+			className={`${className}`}
 			hidden={invisible}
-			key={image?.id ?? "image-placeholder"}
+			key={image.id}
 			height={height}
 			width={width}
-			alt={`${productTitle}-${image?.altText ?? "placeholder"}`}
-			src={invisible ? "" : image?.url ?? placeholderImage}
+			alt={`${productTitle}-${image.altText}`}
+			src={invisible ? "" : image.url}
 			aria-hidden={invisible}
 		/>
 	);

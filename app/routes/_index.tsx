@@ -5,6 +5,7 @@ import type { ProductItemFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
 import { CATALOG_QUERY } from "~/graphql/products/ProductQuery";
 import { ProductCard } from "~/components/ProductCard";
+import { SeperatedBlockQuote } from "~/components/SeperatedBlockQuote";
 
 const AMOUNT_OF_PRODUCTS = 8;
 
@@ -95,12 +96,9 @@ function ProductItem({
 					variantUrl={variantUrl}
 				/>
 			)}
-			<div className="flex divide-x divide-black flex-row max-h-max h-fit min-h-min text-balance max-w-full w-full align-middle text-middle">
-				<div className="max-w-2 h-full" />
-				<blockquote className="h-full pl-3 leading-line w-full text-pretty">
-					{product.title} adkjhsahjkdasjhkdhjkas dhjkashjkdashjkdahjkshdjks
-				</blockquote>
-			</div>
+			<SeperatedBlockQuote>
+				<p>{product.title}</p>
+			</SeperatedBlockQuote>
 		</div>
 	);
 }

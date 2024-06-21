@@ -44,7 +44,7 @@ export function Layout({
 					/>
 				</div>
 				<div className="w-[90dvw] max-w-[90dvw] pr-4 min-w-[90dvw]">
-					<div className="top-0 pt-4 left-0 sticky z-10 bg-white min-h-[12dvh]">
+					<div className="pt-4 z-10 bg-white min-h-[12dvh]">
 						{header && (
 							<Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
 						)}
@@ -126,7 +126,7 @@ const ShopIcon = ({
 			}}
 			end
 		>
-			{header.shop.brand?.logo?.image?.url ? (
+			{/* {header.shop?.brand?.logo?.image?.url ? (
 				<AspectRatio ratio={1 / 1}>
 					<img
 						width={500}
@@ -137,7 +137,7 @@ const ShopIcon = ({
 				</AspectRatio>
 			) : (
 				<FaQuestion height={500} width={500} className="" />
-			)}
+			)} */}
 		</NavLink>
 	);
 };

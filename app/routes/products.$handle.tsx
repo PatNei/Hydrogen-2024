@@ -32,6 +32,7 @@ import { getVariantUrl } from "~/lib/variants";
 import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/products/ProductQuery";
 import { ProductImage } from "~/components/ProductImage";
 import { StyledAspectRatio } from "~/components/StyledAspectRatio";
+import { SeperatedBlockQuote } from "~/components/SeperatedBlockQuote";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [{ title: `Hydrogen | ${data?.product.title ?? ""}` }];
@@ -110,40 +111,21 @@ function redirectToFirstVariant({
 export default function Product() {
 	const { product, variants } = useLoaderData<typeof loader>();
 	const { selectedVariant } = product;
-	const image = selectedVariant?.image;
+	const image = selectedVariant?.image
+		? { ...selectedVariant.image }
+		: undefined;
 	return (
-		<div className="product">
-			<StyledAspectRatio className="max-w-[20px] max-h-2">
-				<ProductImage
-					className="max-w-[20px] max-h-2"
-					image={{ ...image }}
-					width={720}
-					height={1080}
-					productTitle={product.title}
+		<div>
+			<div className="flex flex-row max-w-full w-full relative">
+				<ProductImage image={image} productTitle={product.title} />
+			</div>
+			<div className="sticky bottom-0 left-0 bg-white">
+				<ProductMain
+					selectedVariant={selectedVariant}
+					product={product}
+					variants={variants}
 				/>
-			</StyledAspectRatio>
-			<ProductMain
-				selectedVariant={selectedVariant}
-				product={product}
-				variants={variants}
-			/>
-		</div>
-	);
-}
-
-function _ProductImage({ image }: { image: ProductVariantFragment["image"] }) {
-	if (!image) {
-		return <div className="product-image" />;
-	}
-	return (
-		<div className="product-image">
-			<Image
-				alt={image.altText || "Product Image"}
-				aspectRatio="1/1"
-				data={image}
-				key={image.id}
-				sizes="(min-width: 45em) 50vw, 100vw"
-			/>
+			</div>
 		</div>
 	);
 }
@@ -152,47 +134,45 @@ function ProductMain({
 	selectedVariant,
 	product,
 	variants,
+	className = "",
 }: {
 	product: ProductFragment;
 	selectedVariant: ProductFragment["selectedVariant"];
 	variants: Promise<ProductVariantsQuery>;
+	className?: string;
 }) {
 	const { title, descriptionHtml } = product;
 	return (
-		<div className="product-main">
-			<h1>{title}</h1>
-			<ProductPrice selectedVariant={selectedVariant} />
-			<br />
-			<Suspense
-				fallback={
-					<ProductForm
-						product={product}
-						selectedVariant={selectedVariant}
-						variants={[]}
-					/>
-				}
-			>
-				<Await
-					errorElement="There was a problem loading product variants"
-					resolve={variants}
-				>
-					{(data) => (
+		<div className={`${className}`}>
+			<SeperatedBlockQuote>
+				<p>{title}</p>
+				<ProductPrice selectedVariant={selectedVariant} />
+				<Suspense
+					fallback={
 						<ProductForm
 							product={product}
 							selectedVariant={selectedVariant}
-							variants={data.product?.variants.nodes || []}
+							variants={[]}
 						/>
-					)}
-				</Await>
-			</Suspense>
-			<br />
-			<br />
+					}
+				>
+					<Await
+						errorElement="There was a problem loading product variants"
+						resolve={variants}
+					>
+						{(data) => (
+							<ProductForm
+								product={product}
+								selectedVariant={selectedVariant}
+								variants={data.product?.variants.nodes || []}
+							/>
+						)}
+					</Await>
+				</Suspense>
+			</SeperatedBlockQuote>
 			<p>
 				<strong>Description</strong>
 			</p>
-			<br />
-			<div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
-			<br />
 		</div>
 	);
 }

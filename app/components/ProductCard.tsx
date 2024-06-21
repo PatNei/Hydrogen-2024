@@ -29,10 +29,13 @@ export const ProductCard = ({
 					to={variantUrl}
 					hidden={productImageProps.invisible}
 				>
-					<StyledAspectRatio ratio={4 / 5} className="absolute top-0 left-0">
+					<StyledAspectRatio
+						ratio={4 / 5}
+						className="min-w-full max-w-full w-full min-h-full max-h-full h-full absolute top-0 left-0"
+					>
 						<ProductImage
 							{...productImageProps}
-							ClassName="absolute top-0 left-0"
+							className=" min-w-full max-w-full w-full min-h-full max-h-full h-full absolute top-0 left-0"
 						/>
 					</StyledAspectRatio>
 				</Link>
