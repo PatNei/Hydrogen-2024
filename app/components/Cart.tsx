@@ -3,7 +3,8 @@ import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types
 import { Link } from "@remix-run/react";
 import type { CartApiQueryFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
-
+// https://github.com/Shopify/hydrogen/blob/main/packages/hydrogen/CHANGELOG.md
+// https://shopify.dev/docs/storefronts/headless/hydrogen/cart/setup
 type CartLine = CartApiQueryFragment["lines"]["nodes"][0];
 
 type CartMainProps = {
@@ -12,16 +13,16 @@ type CartMainProps = {
 };
 
 export function CartMain({ layout, cart }: CartMainProps) {
-	const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
-	const withDiscount =
-		cart &&
-		Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
-	const className = `cart-main ${withDiscount ? "with-discount" : ""}`;
-
+	// const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
+	// const withDiscount =
+	// 	cart &&
+	// 	Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
+	// const className = `cart-main ${withDiscount ? "with-discount" : ""}`;
 	return (
-		<div className={className}>
-			<CartEmpty hidden={linesCount} layout={layout} />
-			<CartDetails cart={cart} layout={layout} />
+		<div>
+			Hello
+			{/* <CartEmpty hidden={linesCount} layout={layout} />
+			<CartDetails cart={cart} layout={layout} /> */}
 		</div>
 	);
 }

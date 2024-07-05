@@ -25,7 +25,7 @@ export async function loader({request, context, params}: LoaderFunctionArgs) {
   const linesMap = lines.split(',').map((line) => {
     const lineDetails = line.split(':');
     const variantId = lineDetails[0];
-    const quantity = parseInt(lineDetails[1], 10);
+    const quantity = Number.parseInt(lineDetails[1], 10);
 
     return {
       merchandiseId: `gid://shopify/ProductVariant/${variantId}`,
@@ -59,9 +59,8 @@ export async function loader({request, context, params}: LoaderFunctionArgs) {
   // redirect to checkout
   if (cartResult.checkoutUrl) {
     return redirect(cartResult.checkoutUrl, {headers});
-  } else {
-    throw new Error('No checkout URL found');
   }
+    throw new Error('No checkout URL found');
 }
 
 export default function Component() {

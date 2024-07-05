@@ -1,26 +1,14 @@
 import { Await, NavLink } from "@remix-run/react";
 import { Suspense } from "react";
-import type {
-	CartApiQueryFragment,
-	HeaderQuery,
-} from "storefrontapi.generated";
+import type { HeaderQuery } from "storefrontapi.generated";
 import type { LayoutProps } from "./Layout";
 import { useRootLoaderData } from "~/lib/root-data";
 import {
 	NavigationMenu,
-	NavigationMenuContent,
-	NavigationMenuIndicator,
 	NavigationMenuItem,
 	NavigationMenuLink,
 	NavigationMenuList,
-	NavigationMenuTrigger,
-	NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
 
 import {
 	Card,
@@ -31,9 +19,10 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 
-import { SlBag } from "react-icons/sl";
+import { CartMenu } from "./CartPopover";
+import { useOptimisticCart } from "@shopify/hydrogen";
 
-type HeaderProps = Pick<LayoutProps, "header" | "cart" | "isLoggedIn">;
+type HeaderProps = Pick<LayoutProps, "header" | "cart" | "quantityProps">;
 
 type Viewport = "desktop" | "mobile";
 
@@ -48,8 +37,8 @@ export function getHeaderNavLinkStyle({
 
 export function Header({
 	header,
-	isLoggedIn,
 	cart,
+	quantityProps,
 	className,
 }: HeaderProps & { className?: string }) {
 	const { shop, menu } = header;
@@ -82,7 +71,7 @@ export function Header({
 					<NavigationMenuItem className="">
 						<p>Some text</p>
 					</NavigationMenuItem>
-					<NavigationMenuItem className="flex justify-between">
+					<NavigationMenuItem className="flex gap-2">
 						{(menu || FALLBACK_HEADER_MENU).items.map((item) => {
 							if (!item.url) return null;
 
@@ -106,7 +95,7 @@ export function Header({
 				</NavigationMenuList>
 				<NavigationMenuList className="flex">
 					<NavigationMenuItem>
-						<CartMenu cart={cart} />
+						<CartMenu cart={cart} quantityProps={quantityProps} />
 					</NavigationMenuItem>
 				</NavigationMenuList>
 			</NavigationMenu>
@@ -122,42 +111,6 @@ export function Header({
 		</div>
 	);
 }
-
-export const CartMenu = ({
-	cart,
-}: { cart: Promise<CartApiQueryFragment | null> }) => {
-	return (
-		<Popover>
-			<PopoverTrigger>
-				<Suspense fallback={<CartIcon />}>
-					<Await resolve={cart}>
-						{(cart) => {
-							if (!cart) return <CartIcon />;
-							// return <CartBadge count={cart.totalQuantity || 0} />;
-							return <CartIcon />;
-						}}
-					</Await>
-				</Suspense>
-			</PopoverTrigger>
-			<PopoverContent className="mr-[5dvw] mt-4 max-h-[80dvh]">
-				<Suspense fallback={<div>The cart is empty...</div>}>
-					<Await resolve={cart}>
-						{(cart) => {
-							if (!cart) return <div>The cart is empty...</div>;
-							cart.lines.nodes.map((line) => {
-								<div>{line.merchandise.title}</div>;
-							});
-						}}
-					</Await>
-				</Suspense>
-			</PopoverContent>
-		</Popover>
-	);
-};
-
-const CartIcon = () => {
-	return <SlBag className="w-8 h-8" />;
-};
 
 export const CartItem = () => {
 	return (
@@ -220,7 +173,7 @@ export function HeaderMenu({
 						: item.url;
 				return (
 					<NavLink
-						className="header-menu-item"
+						className=""
 						end
 						key={item.id}
 						onClick={closeAside}
@@ -236,10 +189,7 @@ export function HeaderMenu({
 	);
 }
 
-function HeaderCtas({
-	isLoggedIn,
-	cart,
-}: Pick<HeaderProps, "isLoggedIn" | "cart">) {
+function HeaderCtas({ cart }: Pick<HeaderProps, "cart">) {
 	return (
 		<nav className="header-ctas">
 			{/* <HeaderMenuMobileToggle />

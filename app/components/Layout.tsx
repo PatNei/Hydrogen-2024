@@ -15,41 +15,52 @@ import {
 } from "~/components/Search";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { FaQuestion } from "react-icons/fa6";
+import type { OptimisticCart } from "@shopify/hydrogen";
+// import type { OptimisticCart } from "@shopify/hydrogen";
+
+type quantityProps = {
+	totalQuantity: number;
+	setTotalQuantity: React.Dispatch<React.SetStateAction<number>>;
+};
 
 export type LayoutProps = {
 	cart: Promise<CartApiQueryFragment | null>;
-	children?: React.ReactNode;
+	quantityProps: quantityProps;
 	footer: Promise<FooterQuery>;
 	header: HeaderQuery;
-	isLoggedIn: Promise<boolean>;
+	children?: React.ReactNode;
 };
 
 export function Layout({
 	cart,
 	children = null,
+	quantityProps,
 	footer,
 	header,
-	isLoggedIn,
 }: LayoutProps) {
 	return (
 		<>
 			{/* <CartAside cart={cart} />
 			<SearchAside />
 			<MobileMenuAside menu={header?.menu} shop={header?.shop} /> */}
-			<div className="flex gap-2 mt-12 sm:mt-4 px-2 flex-row max-w-screen min-w-screen w-screen">
+			<div className="flex gap-2 mt-2 sm:mt-4 px-2 flex-row max-w-screen min-w-screen w-screen">
 				<div className="flex min-w-[5dvw] w-[5dvw] max-w-[5dvw] sm:max-w-[5dvw] sm:min-w-[5dvw] sm:w-[5dvw] justify-center">
-					<ShopIcon
+					{/* <ShopIcon
 						className="sticky w-5 max-h-2 pt-4 top-0 left-0"
 						header={header}
-					/>
+					/> */}
 				</div>
 				<div className="w-[90dvw] max-w-[90dvw] pr-4 min-w-[90dvw]">
 					<div className="pt-4 z-10 bg-white min-h-[12dvh]">
 						{header && (
-							<Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
+							<Header
+								header={header}
+								cart={cart}
+								quantityProps={quantityProps}
+							/>
 						)}
 					</div>
-					<main className="">{children}</main>
+					<main>{children}</main>
 				</div>
 			</div>
 			{/* <div>
@@ -126,7 +137,7 @@ const ShopIcon = ({
 			}}
 			end
 		>
-			{/* {header.shop?.brand?.logo?.image?.url ? (
+			{header.shop?.brand?.logo?.image?.url ? (
 				<AspectRatio ratio={1 / 1}>
 					<img
 						width={500}
@@ -137,7 +148,7 @@ const ShopIcon = ({
 				</AspectRatio>
 			) : (
 				<FaQuestion height={500} width={500} className="" />
-			)} */}
+			)}
 		</NavLink>
 	);
 };

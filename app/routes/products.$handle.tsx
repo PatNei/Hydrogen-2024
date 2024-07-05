@@ -23,6 +23,9 @@ import {
 	type VariantOption,
 	getSelectedProductOptions,
 	CartForm,
+	useOptimisticCart,
+	useOptimisticData,
+	OptimisticInput,
 } from "@shopify/hydrogen";
 import type {
 	CartLineInput,
@@ -31,16 +34,27 @@ import type {
 import { getVariantUrl } from "~/lib/variants";
 import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/products/ProductQuery";
 import { ProductImage } from "~/components/ProductImage";
-import { StyledAspectRatio } from "~/components/StyledAspectRatio";
 import { SeperatedBlockQuote } from "~/components/SeperatedBlockQuote";
+import { getNumFromShopifyId } from "~/lib/shopify-util";
+import { optimisticQuantityID } from "~/lib/CONST";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [{ title: `Hydrogen | ${data?.product.title ?? ""}` }];
 };
 
+export type optimisticData = {
+	action: string;
+	item: unknown;
+	quantity?: number;
+};
+
+export type optimisticQuantity = {
+	quantity: number;
+};
+
 export async function loader({ params, request, context }: LoaderFunctionArgs) {
 	const { handle } = params;
-	const { storefront } = context;
+	const { storefront, session, cart } = context;
 
 	if (!handle) {
 		throw new Error("Expected product handle to be defined");
@@ -81,8 +95,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
 	const variants = storefront.query(VARIANTS_QUERY, {
 		variables: { handle },
 	});
-
-	return defer({ product, variants });
+	return defer({ product, variants, cart });
 }
 
 function redirectToFirstVariant({
@@ -109,22 +122,79 @@ function redirectToFirstVariant({
 }
 
 export default function Product() {
-	const { product, variants } = useLoaderData<typeof loader>();
+	const { product, variants, cart } = useLoaderData<typeof loader>();
+	const optimisticCart = useOptimisticCart(cart);
 	const { selectedVariant } = product;
-	const image = selectedVariant?.image
-		? { ...selectedVariant.image }
-		: undefined;
+	const amount = 2;
+	if (!selectedVariant) return <div>OOOOH boy did it go wrong?</div>; // TODO: This is a terrible way to do it fix in the future
 	return (
-		<div>
-			<div className="flex flex-row max-w-full w-full relative">
-				<ProductImage image={image} productTitle={product.title} />
+		<div className="mt-4">
+			<SeperatedBlockQuote>
+				<p>{product.title}</p>
+				<ProductPrice selectedVariant={selectedVariant} />
+			</SeperatedBlockQuote>
+			<div className="flex flex-col max-w-full w-full relative">
+				{product.images.nodes.map((_image, index) => {
+					return (
+						<ProductImage
+							key={""}
+							image={_image}
+							productTitle={product.title}
+						/>
+					);
+				})}
 			</div>
 			<div className="sticky bottom-0 left-0 bg-white">
-				<ProductMain
-					selectedVariant={selectedVariant}
-					product={product}
-					variants={variants}
-				/>
+				<Await
+					errorElement="There was a problem loading product variants"
+					resolve={variants}
+				>
+					{(data) => {
+						return (
+							<VariantSelector
+								handle={product.handle}
+								options={product.options}
+								variants={data.product?.variants.nodes || []}
+							>
+								{({ option }) => (
+									<ProductOptions key={option.name} option={option} />
+								)}
+							</VariantSelector>
+						);
+					}}
+				</Await>
+				<CartForm
+					route="/cart"
+					action={CartForm.ACTIONS.LinesAdd}
+					inputs={{
+						lines: [
+							{
+								merchandiseId: selectedVariant.id,
+								quantity: amount,
+								selectedVariant: selectedVariant,
+
+								// The whole selected variant is not needed on the server, used in
+								// the client to render the product until the server action resolves
+							},
+						],
+					}}
+				>
+					<OptimisticInput
+						id={getNumFromShopifyId(selectedVariant.id)}
+						data={{
+							action: "add",
+							item: selectedVariant,
+							quantity: amount,
+						}}
+					/>
+					<OptimisticInput
+						id={optimisticQuantityID}
+						data={{ quantity: amount } as optimisticQuantity}
+					/>
+					<button disabled={optimisticCart.isOptimistic} type="submit">
+						{optimisticCart.isOptimistic ? "Added!" : "Add to cart"}
+					</button>
+				</CartForm>
 			</div>
 		</div>
 	);
@@ -186,13 +256,10 @@ function ProductPrice({
 		<div className="product-price">
 			{selectedVariant?.compareAtPrice ? (
 				<>
-					<p>Sale</p>
-					<br />
+					<p>SALE!!!!!!!!!!</p>
 					<div className="product-price-on-sale">
 						{selectedVariant ? <Money data={selectedVariant.price} /> : null}
-						<s>
-							<Money data={selectedVariant.compareAtPrice} />
-						</s>
+						<Money data={selectedVariant.compareAtPrice} />
 					</div>
 				</>
 			) : (
@@ -220,12 +287,9 @@ function ProductForm({
 			>
 				{({ option }) => <ProductOptions key={option.name} option={option} />}
 			</VariantSelector>
-			<br />
 			<AddToCartButton
 				disabled={!selectedVariant || !selectedVariant.availableForSale}
-				onClick={() => {
-					window.location.href = window.location.href + "#cart-aside";
-				}}
+				onClick={() => {}}
 				lines={
 					selectedVariant
 						? [

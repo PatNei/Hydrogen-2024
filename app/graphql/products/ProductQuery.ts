@@ -88,6 +88,15 @@ export const PRODUCT_FRAGMENT = `#graphql
     handle
     descriptionHtml
     description
+    images (first: 15){
+		nodes {
+		  id
+		  altText
+		  url
+		  width
+		  height
+		}
+	}
     options {
       name
       values

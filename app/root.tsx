@@ -1,4 +1,8 @@
-import { useNonce } from "@shopify/hydrogen";
+import {
+	useNonce,
+	useOptimisticCart,
+	createCartHandler,
+} from "@shopify/hydrogen";
 import { defer, type LoaderFunctionArgs } from "@shopify/remix-oxygen";
 import {
 	Links,
@@ -12,9 +16,10 @@ import {
 	type ShouldRevalidateFunction,
 } from "@remix-run/react";
 import favicon from "./assets/favicon.svg";
-import tailwindStyles from "./tailwind.css";
+import tailwindStyles from "./tailwind.css?url";
 import { Layout } from "~/components/Layout";
 import { FOOTER_QUERY, HEADER_QUERY } from "./graphql/shop/ShopQuery";
+import { useState } from "react";
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -53,11 +58,8 @@ export function links() {
 }
 
 export async function loader({ context }: LoaderFunctionArgs) {
-	const { storefront, customerAccount, cart } = context;
+	const { storefront } = context;
 	const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
-
-	const isLoggedInPromise = customerAccount.isLoggedIn();
-	const cartPromise = cart.get();
 
 	// defer the footer query (below the fold)
 	const footerPromise = storefront.query(FOOTER_QUERY, {
@@ -77,10 +79,9 @@ export async function loader({ context }: LoaderFunctionArgs) {
 
 	return defer(
 		{
-			cart: cartPromise,
+			cart: context.cart.get(),
 			footer: footerPromise,
 			header: await headerPromise,
-			isLoggedIn: isLoggedInPromise,
 			publicStoreDomain,
 		},
 		{
@@ -94,6 +95,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
 export default function App() {
 	const nonce = useNonce();
 	const data = useLoaderData<typeof loader>();
+	const [totalQuantity, setTotalQuantity] = useState(0);
 
 	return (
 		<html lang="en">
@@ -104,7 +106,13 @@ export default function App() {
 				<Links />
 			</head>
 			<body>
-				<Layout {...data}>
+				<Layout
+					{...data}
+					quantityProps={{
+						totalQuantity: totalQuantity,
+						setTotalQuantity: setTotalQuantity,
+					}}
+				>
 					<Outlet />
 				</Layout>
 				<ScrollRestoration nonce={nonce} />
