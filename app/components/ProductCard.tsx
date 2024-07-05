@@ -29,15 +29,10 @@ export const ProductCard = ({
 					to={variantUrl}
 					hidden={productImageProps.invisible}
 				>
-					<StyledAspectRatio
-						ratio={4 / 5}
-						className="min-w-full max-w-full w-full min-h-full max-h-full h-full absolute top-0 left-0"
-					>
-						<ProductImage
-							{...productImageProps}
-							className=" min-w-full max-w-full w-full min-h-full max-h-full h-full absolute top-0 left-0"
-						/>
-					</StyledAspectRatio>
+					<ProductImage
+						{...productImageProps}
+						className="min-w-full max-w-full w-full min-h-full max-h-full h-fullabsolute top-0 left-0"
+					/>
 				</Link>
 				<div
 					className="hidden peer-hover:flex
