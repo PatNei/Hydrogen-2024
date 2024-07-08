@@ -26,8 +26,8 @@ export const CartMenu = ({ cart }: CartProps) => {
 					<CartButton cart={cart} />
 				)}
 			</PopoverTrigger>
-			<PopoverContent className="mr-[5dvw] mt-1 max-h-[80dvh]">
-				<ScrollArea className="h-72 w-48 rounded-md border">
+			<PopoverContent className="mr-[5dvw] w-[90dvw] sm:w-[32dvw] mt-1 max-h-[80dvh]">
+				<ScrollArea className="h-[60dvh] rounded-md border w-full">
 					<CartContent cart={cart} />
 				</ScrollArea>
 			</PopoverContent>
@@ -35,28 +35,30 @@ export const CartMenu = ({ cart }: CartProps) => {
 	);
 };
 
-export const OptimisticCartContent = ({ cart }: CartProps) => {
+const OptimisticCartContent = ({ cart }: CartProps) => {
 	const optimisticCart = useOptimisticCart(cart);
-	if (!optimisticCart?.lines?.nodes) return <div>Cart is empty...</div>;
+	if (!optimisticCart?.lines?.nodes) return <EmptyCart />;
 	return optimisticCart.lines.nodes.map((line) => {
 		return <CartItem key={line.id} line={line} />;
 	});
 };
 
-export const CartContent = ({ cart }: CartProps) => {
+const CartContent = ({ cart }: CartProps) => {
 	return (
-		<Suspense fallback={<div>Cart is empty...</div>}>
-			<Await resolve={cart}>
-				{(cart) => {
-					if (!cart?.lines?.edges) return <div>Cart is empty...</div>;
+		<div className="max-h-full w-full">
+			<Suspense fallback={<EmptyCart />}>
+				<Await resolve={cart}>
+					{(cart) => {
+						if (!cart?.lines?.edges) return <EmptyCart />;
 
-					return cart.lines.edges.map((edge) => {
-						const line = edge.node;
-						return <CartItem key={line.id} line={line} />;
-					});
-				}}
-			</Await>
-		</Suspense>
+						return cart.lines.edges.map((edge) => {
+							const line = edge.node;
+							return <CartItem key={line.id} line={line} />;
+						});
+					}}
+				</Await>
+			</Suspense>
+		</div>
 	);
 };
 
@@ -88,7 +90,11 @@ const CartItem = ({ line }: { line: CartLine }) => {
 	const variantTitle = title.toLowerCase() === "default title" ? "" : title;
 	return (
 		<div className="bg-slate-400 flex m-2 flex-col" key={line.id}>
-			<ProductImage width={50} productTitle={product.title} image={image} />
+			<ProductImage
+				width={50}
+				productTitle={product.title}
+				image={image ?? undefined}
+			/>
 			<div>x{line.quantity}</div>
 			<div>{variantTitle}</div>
 			<div>{product.title}</div>
@@ -98,6 +104,11 @@ const CartItem = ({ line }: { line: CartLine }) => {
 		</div>
 	);
 };
+
+const EmptyCart = () => {
+	return <div>The cart is empty...</div>;
+};
+
 const CartIcon = ({ amount }: { amount?: string }) => {
 	return (
 		<div className="flex w-8 h-8">
