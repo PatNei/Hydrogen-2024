@@ -33,8 +33,8 @@ import type {
 } from "@shopify/hydrogen/storefront-api-types";
 import { getVariantUrl } from "~/lib/variants";
 import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/products/ProductQuery";
-import { ProductImage } from "~/components/ProductImage";
-import { SeperatedBlockQuote } from "~/components/SeperatedBlockQuote";
+import { ProductImage } from "~/components/Product/ProductImage";
+import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
 import { getNumFromShopifyId } from "~/lib/shopify-util";
 import { optimisticQuantityID } from "~/lib/CONST";
 
@@ -179,18 +179,6 @@ export default function Product() {
 						],
 					}}
 				>
-					<OptimisticInput
-						id={getNumFromShopifyId(selectedVariant.id)}
-						data={{
-							action: "add",
-							item: selectedVariant,
-							quantity: amount,
-						}}
-					/>
-					<OptimisticInput
-						id={optimisticQuantityID}
-						data={{ quantity: amount } as optimisticQuantity}
-					/>
 					<button disabled={optimisticCart.isOptimistic} type="submit">
 						{optimisticCart.isOptimistic ? "Added!" : "Add to cart"}
 					</button>

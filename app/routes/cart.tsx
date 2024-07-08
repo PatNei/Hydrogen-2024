@@ -8,7 +8,7 @@ import {
 	json,
 	type ActionFunctionArgs,
 } from "@shopify/remix-oxygen";
-import { CartMain } from "~/components/Cart";
+import { CartMain } from "~/components/Cart/Cart";
 import { useRootLoaderData } from "~/lib/root-data";
 export const meta: MetaFunction = () => {
 	return [{ title: "Hydrogen | Cart" }];
@@ -84,11 +84,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
 export default function Cart() {
 	const data = useRootLoaderData();
-	const cart = useOptimisticCart(data.cart);
 	return (
 		<div className="cart">
 			<h1>Cart</h1>
-			<CartMain layout="page" cart={cart} />
+			<CartMain layout="page" cart={data.cart} />
 		</div>
 	);
 }
