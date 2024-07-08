@@ -8,7 +8,7 @@ import { useVariantUrl } from "~/lib/variants";
 type CartLine = CartApiQueryFragment["lines"]["nodes"][0];
 
 type CartMainProps = {
-	cart: CartApiQueryFragment | null;
+	cart: Promise<CartApiQueryFragment | null>;
 	layout: "page" | "aside";
 };
 

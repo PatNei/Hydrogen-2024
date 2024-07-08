@@ -4,8 +4,8 @@ import { Pagination, getPaginationVariables } from "@shopify/hydrogen";
 import type { ProductItemFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
 import { CATALOG_QUERY } from "~/graphql/products/ProductQuery";
-import { ProductCard } from "~/components/ProductCard";
-import { SeperatedBlockQuote } from "~/components/SeperatedBlockQuote";
+import { ProductCard } from "~/components/Product/ProductCard";
+import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
 
 const AMOUNT_OF_PRODUCTS = 8;
 

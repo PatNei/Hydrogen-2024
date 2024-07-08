@@ -1,3 +1,10 @@
+import { HeaderQuery } from "storefrontapi.generated";
+import { PredictiveSearchForm, PredictiveSearchResults } from "./Search";
+import { LayoutProps } from "./Main/Layout";
+import { Suspense } from "react";
+import { Await } from "@remix-run/react";
+import { CartMain } from "./Cart/Cart";
+
 /**
  * A side bar component with Overlay that works without JavaScript.
  * @example
@@ -44,5 +51,76 @@ function CloseAside() {
 		<a className="close" href="#" onChange={() => history.go(-1)}>
 			&times;
 		</a>
+	);
+}
+
+function CartAside({ cart }: { cart: LayoutProps["cart"] }) {
+	return (
+		<Aside id="cart-aside" heading="CART">
+			<Suspense fallback={<p>Loading cart ...</p>}>
+				<Await resolve={cart}>
+					{(cart) => {
+						return <CartMain cart={cart} layout="aside" />;
+					}}
+				</Await>
+			</Suspense>
+		</Aside>
+	);
+}
+
+function SearchAside() {
+	return (
+		<Aside id="search-aside" heading="SEARCH">
+			<div className="predictive-search">
+				<br />
+				<PredictiveSearchForm>
+					{({ fetchResults, inputRef }) => (
+						<div>
+							<input
+								name="q"
+								onChange={fetchResults}
+								onFocus={fetchResults}
+								placeholder="Search"
+								ref={inputRef}
+								type="search"
+							/>
+							&nbsp;
+							<button
+								type="button"
+								onClick={() => {
+									window.location.href = inputRef?.current?.value
+										? `/search?q=${inputRef.current.value}`
+										: "/search";
+								}}
+							>
+								Search
+							</button>
+						</div>
+					)}
+				</PredictiveSearchForm>
+				<PredictiveSearchResults />
+			</div>
+		</Aside>
+	);
+}
+
+function MobileMenuAside({
+	menu,
+	shop,
+}: {
+	menu: HeaderQuery["menu"];
+	shop: HeaderQuery["shop"];
+}) {
+	return (
+		menu &&
+		shop?.primaryDomain?.url && (
+			<Aside id="mobile-menu-aside" heading="MENU">
+				<HeaderMenu
+					menu={menu}
+					viewport="mobile"
+					primaryDomainUrl={shop.primaryDomain.url}
+				/>
+			</Aside>
+		)
 	);
 }

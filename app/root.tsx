@@ -17,7 +17,7 @@ import {
 } from "@remix-run/react";
 import favicon from "./assets/favicon.svg";
 import tailwindStyles from "./tailwind.css?url";
-import { Layout } from "~/components/Layout";
+import { Layout } from "~/components/Main/Layout";
 import { FOOTER_QUERY, HEADER_QUERY } from "./graphql/shop/ShopQuery";
 import { useState } from "react";
 
@@ -95,7 +95,6 @@ export async function loader({ context }: LoaderFunctionArgs) {
 export default function App() {
 	const nonce = useNonce();
 	const data = useLoaderData<typeof loader>();
-	const [totalQuantity, setTotalQuantity] = useState(0);
 
 	return (
 		<html lang="en">
@@ -106,13 +105,7 @@ export default function App() {
 				<Links />
 			</head>
 			<body>
-				<Layout
-					{...data}
-					quantityProps={{
-						totalQuantity: totalQuantity,
-						setTotalQuantity: setTotalQuantity,
-					}}
-				>
+				<Layout {...data}>
 					<Outlet />
 				</Layout>
 				<ScrollRestoration nonce={nonce} />

@@ -1,5 +1,5 @@
 import type { HydrogenImageProps } from "@shopify/hydrogen-react/Image";
-import placeholderImage from "../assets/placeholder.webp";
+import placeholderImage from "../../assets/placeholder.webp";
 
 const IMAGE_PRODUCT_WIDTH = 1080;
 const IMAGE_PRODUCT_HEIGHT = 1620;

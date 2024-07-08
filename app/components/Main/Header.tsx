@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/navigation-menu";
 
 import {
-	Card,
 	CardContent,
 	CardDescription,
 	CardFooter,
@@ -19,10 +18,10 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 
-import { CartMenu } from "./CartPopover";
+import { CartMenu } from "../Cart/CartPopover";
 import { useOptimisticCart } from "@shopify/hydrogen";
 
-type HeaderProps = Pick<LayoutProps, "header" | "cart" | "quantityProps">;
+type HeaderProps = Pick<LayoutProps, "header" | "cart">;
 
 type Viewport = "desktop" | "mobile";
 
@@ -38,13 +37,12 @@ export function getHeaderNavLinkStyle({
 export function Header({
 	header,
 	cart,
-	quantityProps,
 	className,
 }: HeaderProps & { className?: string }) {
 	const { shop, menu } = header;
 	const primaryDomainUrl = header.shop.primaryDomain.url;
 	const { publicStoreDomain } = useRootLoaderData();
-
+	const optimisticCart = useOptimisticCart(cart);
 	return (
 		<div className={`flex min-w-full max-w-full h-full ${className}`}>
 			<NavigationMenu className="min-w-full max-w-full h-full flex content-start justify-between">
@@ -95,7 +93,7 @@ export function Header({
 				</NavigationMenuList>
 				<NavigationMenuList className="flex">
 					<NavigationMenuItem>
-						<CartMenu cart={cart} quantityProps={quantityProps} />
+						<CartMenu cart={cart} />
 					</NavigationMenuItem>
 				</NavigationMenuList>
 			</NavigationMenu>
