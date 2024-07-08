@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { Await } from "@remix-run/react";
 import { ProductImage } from "../Product/ProductImage";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 
 type CartProps = {
 	cart: CartQuery;
@@ -27,7 +28,7 @@ export const CartMenu = ({ cart }: CartProps) => {
 				)}
 			</PopoverTrigger>
 			<PopoverContent className="mr-[5dvw] w-[90dvw] sm:w-[32dvw] mt-1 max-h-[80dvh]">
-				<ScrollArea className="h-[60dvh] rounded-md border w-full">
+				<ScrollArea className="h-[60dvh] rounded-sm w-full">
 					<CartContent cart={cart} />
 				</ScrollArea>
 			</PopoverContent>
@@ -89,9 +90,19 @@ const CartItem = ({ line }: { line: CartLine }) => {
 	const { title, price, product, selectedOptions, image } = line.merchandise;
 	const variantTitle = title.toLowerCase() === "default title" ? "" : title;
 	return (
-		<div className="bg-slate-400 flex m-2 flex-col" key={line.id}>
+		<div className=" flex m-2 flex-col" key={line.id}>
+			<Input
+				className=" border-none p-1 m-0 max-w-12 accent-transparent focus-visible:ring-transparent"
+				inputMode="numeric"
+				min={0}
+				max={50}
+				type="number"
+				defaultValue={line.quantity}
+				placeholder={line.quantity.toString()}
+			/>
 			<ProductImage
 				width={50}
+				height={50}
 				productTitle={product.title}
 				image={image ?? undefined}
 			/>
@@ -111,18 +122,18 @@ const EmptyCart = () => {
 
 const CartIcon = ({ amount }: { amount?: string }) => {
 	return (
-		<div className="flex w-8 h-8">
+		<div className="flex w-8 h-8 relative">
 			<SlBag className="w-full h-full" />
-			<p>{amount ?? "0"}</p>
+			<div className="absolute bg-white w-fit max-w-10 -bottom-2 -right-2">
+				<p className="">{amount ?? "0"}</p>
+			</div>
 		</div>
 	);
 };
 
 const extractTotalQuantity = (lines: CartLines) => {
 	if (!lines) return 0;
-	return (
-		lines.reduce((acc, line) => {
-			return acc + line.quantity;
-		}, 0) ?? 0
-	);
+	return lines.reduce((acc, line) => {
+		return acc + line.quantity;
+	}, 0);
 };
