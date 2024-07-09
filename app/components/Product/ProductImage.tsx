@@ -1,6 +1,6 @@
 import type { HydrogenImageProps } from "@shopify/hydrogen-react/Image";
 import placeholderImage from "../../assets/placeholder.webp";
-
+import { Image } from "@shopify/hydrogen";
 const IMAGE_PRODUCT_WIDTH = 1080;
 const IMAGE_PRODUCT_HEIGHT = 1620;
 
@@ -23,22 +23,20 @@ export const ProductImage = ({
 }: ProductImageProps) => {
 	if (!image)
 		return (
-			<ProductImage
-				invisible={invisible}
+			<img
+				className={`${className}`}
+				hidden={invisible}
+				key={"image-placeholder"}
 				height={height}
 				width={width}
-				productTitle={productTitle}
-				className={className}
-				image={{
-					id: "image-placeholder",
-					url: placeholderImage,
-					altText: "placeholder image",
-				}}
+				alt={`${productTitle}-placeholder-image`}
+				src={invisible ? "" : placeholderImage}
+				aria-hidden={invisible}
 			/>
 		);
 
 	return (
-		<img
+		<Image
 			className={`${className}`}
 			hidden={invisible}
 			key={image.id}
