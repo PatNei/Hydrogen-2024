@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { forwardRef, Suspense } from "react";
 import {
 	defer,
 	redirect,
@@ -35,8 +35,8 @@ import { getVariantUrl } from "~/lib/variants";
 import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/products/ProductQuery";
 import { ProductImage } from "~/components/Product/ProductImage";
 import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
-import { getNumFromShopifyId } from "~/lib/shopify-util";
-import { optimisticQuantityID } from "~/lib/CONST";
+import { useRootLoaderData } from "~/lib/root-data";
+import { RichText } from "~/components/Default/RichText";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [{ title: `Hydrogen | ${data?.product.title ?? ""}` }];
@@ -95,7 +95,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
 	const variants = storefront.query(VARIANTS_QUERY, {
 		variables: { handle },
 	});
-	return defer({ product, variants, cart });
+	return defer({ product, variants });
 }
 
 function redirectToFirstVariant({
@@ -122,22 +122,27 @@ function redirectToFirstVariant({
 }
 
 export default function Product() {
-	const { product, variants, cart } = useLoaderData<typeof loader>();
+	// TODO: Consider https://github.com/cure53/DOMPurify for product descriptions
+
+	const { product, variants } = useLoaderData<typeof loader>();
+	const { cart } = useRootLoaderData();
 	const optimisticCart = useOptimisticCart(cart);
 	const { selectedVariant } = product;
-	const amount = 2;
+	const amount = 9;
 	if (!selectedVariant) return <div>OOOOH boy did it go wrong?</div>; // TODO: This is a terrible way to do it fix in the future
 	return (
 		<div className="mt-4">
 			<SeperatedBlockQuote>
 				<p>{product.title}</p>
+				{/* biome-ignore lint/security/noDangerouslySetInnerHtml: We might need to reconsider this but for now it is allowed */}
+				<div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
 				<ProductPrice selectedVariant={selectedVariant} />
 			</SeperatedBlockQuote>
-			<div className="flex flex-col max-w-full w-full relative">
+			<div className="flex flex-col max-w-full w-full relative min-h-[70dvh]">
 				{product.images.nodes.map((_image, index) => {
 					return (
 						<ProductImage
-							key={""}
+							key={_image.id}
 							image={_image}
 							productTitle={product.title}
 						/>
@@ -188,109 +193,25 @@ export default function Product() {
 	);
 }
 
-function ProductMain({
-	selectedVariant,
-	product,
-	variants,
-	className = "",
-}: {
-	product: ProductFragment;
-	selectedVariant: ProductFragment["selectedVariant"];
-	variants: Promise<ProductVariantsQuery>;
-	className?: string;
-}) {
-	const { title, descriptionHtml } = product;
-	return (
-		<div className={`${className}`}>
-			<SeperatedBlockQuote>
-				<p>{title}</p>
-				<ProductPrice selectedVariant={selectedVariant} />
-				<Suspense
-					fallback={
-						<ProductForm
-							product={product}
-							selectedVariant={selectedVariant}
-							variants={[]}
-						/>
-					}
-				>
-					<Await
-						errorElement="There was a problem loading product variants"
-						resolve={variants}
-					>
-						{(data) => (
-							<ProductForm
-								product={product}
-								selectedVariant={selectedVariant}
-								variants={data.product?.variants.nodes || []}
-							/>
-						)}
-					</Await>
-				</Suspense>
-			</SeperatedBlockQuote>
-			<p>
-				<strong>Description</strong>
-			</p>
-		</div>
-	);
-}
-
 function ProductPrice({
 	selectedVariant,
 }: {
 	selectedVariant: ProductFragment["selectedVariant"];
 }) {
-	return (
-		<div className="product-price">
-			{selectedVariant?.compareAtPrice ? (
-				<>
-					<p>SALE!!!!!!!!!!</p>
-					<div className="product-price-on-sale">
-						{selectedVariant ? <Money data={selectedVariant.price} /> : null}
-						<Money data={selectedVariant.compareAtPrice} />
-					</div>
-				</>
-			) : (
-				selectedVariant?.price && <Money data={selectedVariant?.price} />
-			)}
-		</div>
-	);
-}
+	if (!selectedVariant) return <div>?</div>;
 
-function ProductForm({
-	product,
-	selectedVariant,
-	variants,
-}: {
-	product: ProductFragment;
-	selectedVariant: ProductFragment["selectedVariant"];
-	variants: Array<ProductVariantFragment>;
-}) {
 	return (
-		<div className="product-form">
-			<VariantSelector
-				handle={product.handle}
-				options={product.options}
-				variants={variants}
-			>
-				{({ option }) => <ProductOptions key={option.name} option={option} />}
-			</VariantSelector>
-			<AddToCartButton
-				disabled={!selectedVariant || !selectedVariant.availableForSale}
-				onClick={() => {}}
-				lines={
-					selectedVariant
-						? [
-								{
-									merchandiseId: selectedVariant.id,
-									quantity: 1,
-								},
-							]
-						: []
-				}
-			>
-				{selectedVariant?.availableForSale ? "Add to cart" : "Sold out"}
-			</AddToCartButton>
+		<div className="flex flex-col">
+			{selectedVariant.compareAtPrice && (
+				<div>
+					<p>SALE!!!!!!!!!!</p>
+					<Money
+						className="line-through opacity-30"
+						data={selectedVariant.compareAtPrice}
+					/>
+				</div>
+			)}
+			<Money className="h-5" data={selectedVariant.price} />
 		</div>
 	);
 }
@@ -321,44 +242,5 @@ function ProductOptions({ option }: { option: VariantOption }) {
 			</div>
 			<br />
 		</div>
-	);
-}
-
-function AddToCartButton({
-	analytics,
-	children,
-	disabled,
-	lines,
-	onClick,
-}: {
-	analytics?: unknown;
-	children: React.ReactNode;
-	disabled?: boolean;
-	lines: CartLineInput[];
-	onClick?: () => void;
-}) {
-	return (
-		<CartForm
-			route="/cart"
-			inputs={{ lines }}
-			action={CartForm.ACTIONS.LinesAdd}
-		>
-			{(fetcher: FetcherWithComponents<any>) => (
-				<>
-					<input
-						name="analytics"
-						type="hidden"
-						value={JSON.stringify(analytics)}
-					/>
-					<button
-						type="submit"
-						onClick={onClick}
-						disabled={disabled ?? fetcher.state !== "idle"}
-					>
-						{children}
-					</button>
-				</>
-			)}
-		</CartForm>
 	);
 }
