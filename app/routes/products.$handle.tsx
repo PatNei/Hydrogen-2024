@@ -38,6 +38,7 @@ import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
 import { useRootLoaderData } from "~/lib/root-data";
 import { RichText } from "~/components/Default/RichText";
 import { Button } from "~/components/Default/Button";
+import { CreateLineForm } from "~/components/Forms/CreateLineForm";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [{ title: `Hydrogen | ${data?.product.title ?? ""}` }];
@@ -129,18 +130,16 @@ export default function Product() {
 	const { cart } = useRootLoaderData();
 	const optimisticCart = useOptimisticCart(cart);
 	const { selectedVariant } = product;
-	const amount = 9;
-	if (!selectedVariant) return <div>OOOOH boy did it go wrong?</div>; // TODO: This is a terrible way to do it fix in the future
 	return (
 		<div className="mt-4">
 			<SeperatedBlockQuote>
 				<p>{product.title}</p>
-				{/* biome-ignore lint/security/noDangerouslySetInnerHtml: We might need to reconsider this but for now it is allowed */}
+				{/* biome-ignore lint/security/noDangerouslySetInnerHtml: We might need to reconsider this but for now it is allowed. Purifying the input could be the way */}
 				<div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
 				<ProductPrice selectedVariant={selectedVariant} />
 			</SeperatedBlockQuote>
 			<div className="flex flex-col max-w-full w-full relative min-h-[70dvh]">
-				{product.images.nodes.map((_image, index) => {
+				{product.images.nodes.map((_image) => {
 					return (
 						<ProductImage
 							key={_image.id}
@@ -169,27 +168,10 @@ export default function Product() {
 						);
 					}}
 				</Await>
-				<CartForm
-					route="/cart"
-					action={CartForm.ACTIONS.LinesAdd}
-					inputs={{
-						lines: [
-							{
-								merchandiseId: selectedVariant.id,
-								quantity: amount,
-								selectedVariant: selectedVariant,
-
-								// The whole selected variant is not needed on the server, used in
-								// the client to render the product until the server action resolves
-							},
-						],
-					}}
-				>
-					<Button disabled={optimisticCart.isOptimistic} type="submit">
-						{optimisticCart.isOptimistic ? "Added!" : "Add to cart"}
-					</Button>
-				</CartForm>
-
+				<CreateLineForm
+					optimisticCart={optimisticCart}
+					selectedVariant={selectedVariant}
+				/>
 			</div>
 		</div>
 	);

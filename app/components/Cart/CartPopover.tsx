@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { UpdateLineForm } from "../Forms/UpdateLineForm";
 import { DeleteLineForm } from "../Forms/DeleteLineForm";
 import { Button } from "../Default/Button";
+import type { defaultFormProps } from "../Forms/types";
 
 type CartProps = {
 	cart: CartQuery;
@@ -48,11 +49,14 @@ const OptimisticCartContent = ({ cart }: CartProps) => {
 	const optimisticCart = useOptimisticCart(cart);
 	if (!optimisticCart?.lines?.nodes) return <EmptyCart />;
 	return optimisticCart.lines.nodes.map((line) => {
-		return <CartItem key={line.id} line={line} />;
+		return (
+			<CartItem optimisticCart={optimisticCart} key={line.id} line={line} />
+		);
 	});
 };
 
 const CartContent = ({ cart }: CartProps) => {
+	const optimisticCart = useOptimisticCart(cart);
 	return (
 		<div className="max-h-full w-full">
 			<Suspense fallback={<EmptyCart />}>
@@ -65,7 +69,13 @@ const CartContent = ({ cart }: CartProps) => {
 							<div className="flex flex-col">
 								{cart.lines.edges.map((edge) => {
 									const line = edge.node;
-									return <CartItem key={line.id} line={line} />;
+									return (
+										<CartItem
+											optimisticCart={optimisticCart}
+											key={line.id}
+											line={line}
+										/>
+									);
 								})}
 								<p className="">
 									Total: <Money data={cart.cost.totalAmount} />
@@ -104,7 +114,10 @@ const OptimisticCartButton = ({ cart }: CartProps) => {
 	return <CartIcon amount={amountOfLines} text="+" />;
 };
 
-const CartItem = ({ line }: { line: CartLine; isOptimistic?: boolean }) => {
+const CartItem = ({
+	line,
+	optimisticCart,
+}: { line: CartLine } & Pick<defaultFormProps, "optimisticCart">) => {
 	const {
 		title,
 		price,
@@ -119,6 +132,7 @@ const CartItem = ({ line }: { line: CartLine; isOptimistic?: boolean }) => {
 	return (
 		<div className=" flex m-2 flex-col" key={merchandiseId}>
 			<UpdateLineForm
+				optimisticCart={optimisticCart}
 				quantity={quantity}
 				lineId={line.id}
 				merchandiseId={merchandiseId}
@@ -129,13 +143,12 @@ const CartItem = ({ line }: { line: CartLine; isOptimistic?: boolean }) => {
 				productTitle={product.title}
 				image={image ?? undefined}
 			/>
-			<p>x{quantity}</p>
 			<p>{variantTitle}</p>
 			<p>{product.title}</p>
 			<p>
-				{price.currencyCode} {price.amount}
+				{price.currencyCode} {price.amount} x {quantity}
 			</p>
-			<DeleteLineForm lineId={line.id} />
+			<DeleteLineForm optimisticCart={optimisticCart} lineId={line.id} />
 		</div>
 	);
 };
