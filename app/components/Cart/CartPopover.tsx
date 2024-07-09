@@ -3,6 +3,7 @@ import { PopoverTrigger } from "@radix-ui/react-popover";
 import { SlBag } from "react-icons/sl";
 import {
 	CartForm,
+	Money,
 	useOptimisticCart,
 	type OptimisticCart,
 } from "@shopify/hydrogen";
@@ -13,13 +14,15 @@ import { Await, useSubmit } from "@remix-run/react";
 import { ProductImage } from "../Product/ProductImage";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { UpdateLineForm } from "../Forms/UpdateLineForm";
+import { DeleteLineForm } from "../Forms/DeleteLineForm";
+import { Button } from "../Default/Button";
 
 type CartProps = {
 	cart: CartQuery;
 };
-type CartLine = CartApiQueryFragment["lines"]["edges"][0]["node"];
-type CartLines = Array<CartLine>;
+export type CartLine = CartApiQueryFragment["lines"]["edges"][0]["node"];
+export type CartLines = Array<CartLine>;
 export const CartMenu = ({ cart }: CartProps) => {
 	const optimisticCart = useOptimisticCart(cart);
 
@@ -58,10 +61,19 @@ const CartContent = ({ cart }: CartProps) => {
 						if (!cart?.lines?.edges || cart.lines.edges.length < 1)
 							return <EmptyCart />;
 
-						return cart.lines.edges.map((edge) => {
-							const line = edge.node;
-							return <CartItem key={line.id} line={line} />;
-						});
+						return (
+							<div className="flex flex-col">
+								{cart.lines.edges.map((edge) => {
+									const line = edge.node;
+									return <CartItem key={line.id} line={line} />;
+								})}
+								<p className="">
+									Total: <Money data={cart.cost.totalAmount} />
+								</p>
+								<Button>go to cart</Button>
+								<Button>checkout</Button>
+							</div>
+						);
 					}}
 				</Await>
 			</Suspense>
@@ -93,87 +105,37 @@ const OptimisticCartButton = ({ cart }: CartProps) => {
 };
 
 const CartItem = ({ line }: { line: CartLine; isOptimistic?: boolean }) => {
-	const { title, price, product, selectedOptions, image } = line.merchandise;
+	const {
+		title,
+		price,
+		product,
+		selectedOptions,
+		image,
+		id: merchandiseId,
+	} = line.merchandise;
 	const variantTitle = title.toLowerCase() === "default title" ? "" : title;
 	const quantity = line.quantity;
-	const [tempValue, setTempValue] = useState(quantity);
-	const tempValueInvalid =
-		tempValue < 0 || Number.isNaN(tempValue) || tempValue === quantity;
-	const submit = useSubmit();
-	// Sync tempValue with quantity if quantity changes, this happens when you add to cart without reloading the page.
-	useEffect(() => {
-		setTempValue(quantity);
-	}, [quantity]);
+
 	return (
-		<div className=" flex m-2 flex-col" key={line.id}>
-			<CartForm
-				route="/cart"
-				action={CartForm.ACTIONS.LinesUpdate}
-				inputs={{
-					lines: [
-						{
-							id: line.id,
-							merchandiseId: line.merchandise.id, // forgot this and it wouldn't submit
-							quantity: tempValue,
-						},
-					],
-				}}
-			>
-				<Input
-					className=" border-none p-1 m-0 max-w-12 accent-transparent focus-visible:ring-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-					inputMode="numeric"
-					required={true}
-					min={0}
-					max={50}
-					type="number"
-					onInput={(event) => {
-						setTempValue(event.currentTarget.valueAsNumber);
-					}}
-					onMouseOver={(event) => {
-						// TODO: Might need similar functionality for mobile version. Not tested.
-						event.currentTarget.focus();
-					}}
-					onKeyDown={(event) => {
-						// Submission keys can be defined in the array in lowercase.
-						// Currently only enter key that allows for submission.
-						if (["enter"].includes(event.key.toLowerCase())) {
-							submit(event.currentTarget);
-						}
-					}}
-					defaultValue={quantity}
-					value={tempValue}
-				/>
-				<Button
-					variant={"ghost"}
-					type="submit"
-					disabled={tempValueInvalid}
-					hidden={tempValueInvalid}
-					className={` ${tempValueInvalid ? "hidden" : ""}`}
-				>
-					Update 👍
-				</Button>
-			</CartForm>
+		<div className=" flex m-2 flex-col" key={merchandiseId}>
+			<UpdateLineForm
+				quantity={quantity}
+				lineId={line.id}
+				merchandiseId={merchandiseId}
+			/>
 			<ProductImage
 				width={50}
 				height={50}
 				productTitle={product.title}
 				image={image ?? undefined}
 			/>
-			<div>x{quantity}</div>
-			<div>{variantTitle}</div>
-			<div>{product.title}</div>
-			<div>
+			<p>x{quantity}</p>
+			<p>{variantTitle}</p>
+			<p>{product.title}</p>
+			<p>
 				{price.currencyCode} {price.amount}
-			</div>
-			<CartForm
-				route="/cart"
-				action={CartForm.ACTIONS.LinesRemove}
-				inputs={{ lineIds: [line.id] }}
-			>
-				<Button variant={"ghost"} type="submit">
-					Delete
-				</Button>
-			</CartForm>
+			</p>
+			<DeleteLineForm lineId={line.id} />
 		</div>
 	);
 };

@@ -37,6 +37,7 @@ import { ProductImage } from "~/components/Product/ProductImage";
 import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
 import { useRootLoaderData } from "~/lib/root-data";
 import { RichText } from "~/components/Default/RichText";
+import { Button } from "~/components/Default/Button";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [{ title: `Hydrogen | ${data?.product.title ?? ""}` }];
@@ -184,10 +185,11 @@ export default function Product() {
 						],
 					}}
 				>
-					<button disabled={optimisticCart.isOptimistic} type="submit">
+					<Button disabled={optimisticCart.isOptimistic} type="submit">
 						{optimisticCart.isOptimistic ? "Added!" : "Add to cart"}
-					</button>
+					</Button>
 				</CartForm>
+
 			</div>
 		</div>
 	);

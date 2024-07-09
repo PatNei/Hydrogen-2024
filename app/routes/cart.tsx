@@ -21,7 +21,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 	}
 	let status = 200;
 	let result: CartQueryDataReturn;
-
+	const _cart = await cart.get();
 	switch (action) {
 		case CartForm.ACTIONS.LinesAdd:
 			result = await cart.addLines(inputs.lines);
@@ -31,6 +31,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 			break;
 		case CartForm.ACTIONS.LinesRemove:
 			result = await cart.removeLines(inputs.lineIds);
+			console.log("Hi");
 			break;
 		case CartForm.ACTIONS.DiscountCodesUpdate: {
 			const formDiscountCode = inputs.discountCode;
@@ -113,41 +114,41 @@ export function CartMain({ layout, cart }: CartMainProps) {
 	);
 }
 
-function CartDetails({ layout, cart }: CartMainProps) {
-	const cartHasItems = !!cart && cart.totalQuantity > 0;
+// function CartDetails({ layout, cart }: CartMainProps) {
+// 	const cartHasItems = !!cart && cart.totalQuantity > 0;
 
-	return (
-		<div className="cart-details">
-			<CartLines lines={cart?.lines} layout={layout} />
-			{cartHasItems && (
-				<CartSummary cost={cart.cost} layout={layout}>
-					<CartDiscounts discountCodes={cart.discountCodes} />
-					<CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
-				</CartSummary>
-			)}
-		</div>
-	);
-}
+// 	return (
+// 		<div className="cart-details">
+// 			<CartLines lines={cart?.lines} layout={layout} />
+// 			{cartHasItems && (
+// 				<CartSummary cost={cart.cost} layout={layout}>
+// 					<CartDiscounts discountCodes={cart.discountCodes} />
+// 					<CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+// 				</CartSummary>
+// 			)}
+// 		</div>
+// 	);
+// }
 
-function CartLines({
-	lines,
-	layout,
-}: {
-	layout: CartMainProps["layout"];
-	lines: CartApiQueryFragment["lines"] | undefined;
-}) {
-	if (!lines) return null;
+// function CartLines({
+// 	lines,
+// 	layout,
+// }: {
+// 	layout: CartMainProps["layout"];
+// 	lines: CartApiQueryFragment["lines"] | undefined;
+// }) {
+// 	if (!lines) return null;
 
-	return (
-		<div aria-labelledby="cart-lines">
-			<ul>
-				{lines.nodes.map((line) => (
-					<CartLineItem key={line.id} line={line} layout={layout} />
-				))}
-			</ul>
-		</div>
-	);
-}
+// 	return (
+// 		<div aria-labelledby="cart-lines">
+// 			<ul>
+// 				{lines.nodes.map((line) => (
+// 					<CartLineItem key={line.id} line={line} layout={layout} />
+// 				))}
+// 			</ul>
+// 		</div>
+// 	);
+// }
 
 function CartLineItem({
 	layout,
