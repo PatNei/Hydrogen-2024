@@ -3,9 +3,11 @@ import { hydrogen } from "@shopify/hydrogen/vite";
 import { oxygen } from "@shopify/mini-oxygen/vite";
 import { vitePlugin as remix } from "@remix-run/dev";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { remixDevTools } from "remix-development-tools";
 const _plugins = [
 	hydrogen(),
 	oxygen(),
+	remixDevTools(),
 	remix({
 		presets: [hydrogen.preset()],
 		future: {
@@ -17,6 +19,16 @@ const _plugins = [
 	tsconfigPaths(),
 ];
 export default defineConfig({
+	ssr: {
+		optimizeDeps: {
+			include: [
+				"date-fns/add/index.js",
+				"date-fns/formatDistance/index.js",
+				"react-diff-viewer-continued",
+				"beautify",
+			],
+		},
+	},
 	plugins: _plugins,
 	build: {
 		// Allow a strict Content-Security-Policy
