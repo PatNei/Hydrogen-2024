@@ -8,11 +8,6 @@ import { Header, getHeaderNavLinkStyle } from "~/components/Main/Header";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { FaQuestion } from "react-icons/fa6";
 
-type quantityProps = {
-	totalQuantity: number;
-	setTotalQuantity: React.Dispatch<React.SetStateAction<number>>;
-};
-
 export type CartQuery = Promise<CartApiQueryFragment | null>;
 export type LayoutProps = {
 	cart: CartQuery;
@@ -29,10 +24,10 @@ export function Layout({ cart, children = null, footer, header }: LayoutProps) {
 			<MobileMenuAside menu={header?.menu} shop={header?.shop} /> */}
 			<div className="flex gap-2 mt-2 sm:mt-4 px-2 flex-row max-w-screen min-w-screen w-screen">
 				<div className="flex min-w-[5dvw] w-[5dvw] max-w-[5dvw] sm:max-w-[5dvw] sm:min-w-[5dvw] sm:w-[5dvw] justify-center">
-					{/* <ShopIcon
+					<ShopIcon
 						className="sticky w-5 max-h-2 pt-4 top-0 left-0"
 						header={header}
-					/> */}
+					/>
 				</div>
 				<div className="w-[90dvw] max-w-[90dvw] pr-4 min-w-[90dvw]">
 					<div className="pt-4 z-10 bg-white min-h-[12dvh]">
