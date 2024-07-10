@@ -7,7 +7,7 @@ import {
 } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, json, redirect } from "@shopify/remix-oxygen";
 import type { ProductItemFragment } from "storefrontapi.generated";
-import { COLLECTION_QUERY } from "~/graphql/products/ProductQuery";
+import { COLLECTION_QUERY } from "~/graphql/products/CollectionsQuery";
 import { useVariantUrl } from "~/lib/variants";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {

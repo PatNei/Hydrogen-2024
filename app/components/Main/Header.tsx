@@ -43,6 +43,7 @@ export function Header({
 	const primaryDomainUrl = header.shop.primaryDomain.url;
 	const { publicStoreDomain } = useRootLoaderData();
 	const optimisticCart = useOptimisticCart(cart);
+	const pages = [{ title: "collections", url: "collections" }];
 	return (
 		<div className={`flex min-w-full max-w-full h-full ${className}`}>
 			<NavigationMenu className="min-w-full max-w-full h-full flex content-start justify-between">
@@ -70,6 +71,15 @@ export function Header({
 						<p>Some text</p>
 					</NavigationMenuItem>
 					<NavigationMenuItem className="flex gap-2">
+						{pages.map((page) => {
+							return (
+								<NavigationMenuLink key={`nml-${page.title}`}>
+									<NavLink end key={page.title} prefetch="intent" to={page.url}>
+										<p className="underline font-extralight">{page.title}</p>
+									</NavLink>
+								</NavigationMenuLink>
+							);
+						})}
 						{(menu || FALLBACK_HEADER_MENU).items.map((item) => {
 							if (!item.url) return null;
 
@@ -84,7 +94,9 @@ export function Header({
 							return (
 								<NavigationMenuLink key={`nml-${item.id}`}>
 									<NavLink end key={item.id} prefetch="intent" to={url}>
-										<p className="underline font-extralight">{item.title}</p>
+										<p className="underline font-extralight">
+											{item.title.toLowerCase()}
+										</p>
 									</NavLink>
 								</NavigationMenuLink>
 							);

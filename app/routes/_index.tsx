@@ -1,6 +1,7 @@
 import { type MetaFunction, useLoaderData } from "@remix-run/react";
 import { Pagination, getPaginationVariables } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, json } from "@shopify/remix-oxygen";
+import { ProductCollectionPagination } from "~/components/Product/ProductCollection";
 import { ProductsGrid } from "~/components/Product/ProductGrid";
 import { CATALOG_QUERY } from "~/graphql/products/ProductQuery";
 
@@ -25,20 +26,22 @@ export default function Collection() {
 	const { products } = useLoaderData<typeof loader>();
 
 	return (
-		<div className="flex flex-col max-w-full gap-4 mt-2">
+		<ProductCollectionPagination>
 			<Pagination connection={products}>
-				{({ nodes, isLoading, PreviousLink, NextLink }) => (
-					<>
-						<PreviousLink>
-							{isLoading ? "Loading..." : <span>↑ Load previous</span>}
-						</PreviousLink>
-						<ProductsGrid products={nodes} />
-						<NextLink>
-							{isLoading ? "Loading..." : <span>Load more ↓</span>}
-						</NextLink>
-					</>
-				)}
+				{({ nodes, isLoading, PreviousLink, NextLink }) => {
+					return (
+						<>
+							<PreviousLink>
+								{isLoading ? "Loading..." : <span>↑ Load previous</span>}
+							</PreviousLink>
+							<ProductsGrid products={nodes} />
+							<NextLink>
+								{isLoading ? "Loading..." : <span>Load more ↓</span>}
+							</NextLink>
+						</>
+					);
+				}}
 			</Pagination>
-		</div>
+		</ProductCollectionPagination>
 	);
 }

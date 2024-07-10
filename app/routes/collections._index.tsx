@@ -2,6 +2,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { Image, Pagination, getPaginationVariables } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, json } from "@shopify/remix-oxygen";
 import type { CollectionFragment } from "storefrontapi.generated";
+import { COLLECTIONS_QUERY } from "~/graphql/products/CollectionsQuery";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
 	const paginationVariables = getPaginationVariables(request, {
@@ -19,8 +20,8 @@ export default function Collections() {
 	const { collections } = useLoaderData<typeof loader>();
 
 	return (
-		<div className="collections">
-			<h1>Collections</h1>
+		<div className="flex flex-col gap-2 mt-4">
+			<h1 className="text-lg">Collections</h1>
 			<Pagination connection={collections}>
 				{({ nodes, isLoading, PreviousLink, NextLink }) => (
 					<div>
@@ -42,7 +43,7 @@ function CollectionsGrid({
 	collections,
 }: { collections: CollectionFragment[] }) {
 	return (
-		<div className="collections-grid">
+		<div className="flex flex-col gap-2 ">
 			{collections.map((collection, index) => (
 				<CollectionItem
 					key={collection.id}
@@ -63,11 +64,12 @@ function CollectionItem({
 }) {
 	return (
 		<Link
-			className="collection-item"
+			className="flex gap-2"
 			key={collection.id}
 			to={`/collections/${collection.handle}`}
 			prefetch="intent"
 		>
+			<span> - </span>
 			{collection?.image && (
 				<Image
 					alt={collection.image.altText || collection.title}
@@ -80,43 +82,3 @@ function CollectionItem({
 		</Link>
 	);
 }
-
-const COLLECTIONS_QUERY = `#graphql
-  fragment Collection on Collection {
-    id
-    title
-    handle
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-  }
-  query StoreCollections(
-    $country: CountryCode
-    $endCursor: String
-    $first: Int
-    $language: LanguageCode
-    $last: Int
-    $startCursor: String
-  ) @inContext(country: $country, language: $language) {
-    collections(
-      first: $first,
-      last: $last,
-      before: $startCursor,
-      after: $endCursor
-    ) {
-      nodes {
-        ...Collection
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-    }
-  }
-` as const;
