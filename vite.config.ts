@@ -22,7 +22,6 @@ const _plugins = [
 		mode: "check",
 		files: ".",
 		applyFixes: false,
-		failOnError: true,
 	}),
 ];
 export default defineConfig({

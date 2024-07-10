@@ -3,7 +3,11 @@
 	"organizeImports": {
 		"enabled": true
 	},
+	"formatter": {
+		"ignore": ["*.generated.d.ts"]
+	},
 	"linter": {
+		"ignore": ["*.generated.d.ts"],
 		"enabled": true,
 		"rules": {
 			"recommended": true
