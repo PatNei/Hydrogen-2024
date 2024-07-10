@@ -47,7 +47,7 @@ export function Aside({
 
 function CloseAside() {
 	return (
-		/* eslint-disable-next-line jsx-a11y/anchor-is-valid */
+		// biome-ignore lint/a11y/useValidAnchor: <explanation>
 		<a className="close" href="#" onChange={() => history.go(-1)}>
 			&times;
 		</a>

@@ -17,7 +17,7 @@ export async function loader({
 	});
 
 	if (!params.blogHandle) {
-		throw new Response(`blog not found`, { status: 404 });
+		throw new Response("blog not found", { status: 404 });
 	}
 
 	const { blog } = await storefront.query(BLOGS_QUERY, {
@@ -81,7 +81,7 @@ function ArticleItem({
 		year: "numeric",
 		month: "long",
 		day: "numeric",
-	}).format(new Date(article.publishedAt!));
+	}).format(new Date(article.publishedAt));
 	return (
 		<div className="blog-article" key={article.id}>
 			<Link to={`/blogs/${article.blog.handle}/${article.handle}`}>

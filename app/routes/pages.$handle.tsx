@@ -31,6 +31,7 @@ export default function Page() {
 			<header>
 				<h1>{page.title}</h1>
 			</header>
+			{/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
 			<main dangerouslySetInnerHTML={{ __html: page.body }} />
 		</div>
 	);

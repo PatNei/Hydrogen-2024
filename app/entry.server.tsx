@@ -19,8 +19,9 @@ export default async function handleRequest(
 		{
 			nonce,
 			signal: request.signal,
-			onError(error) {
+			onError: (error) => {
 				console.error(error);
+				// biome-ignore lint/style/noParameterAssign: <explanation>
 				responseStatusCode = 500;
 			},
 		},

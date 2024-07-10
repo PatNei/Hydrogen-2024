@@ -53,6 +53,7 @@ export default function Policy() {
 			</div>
 			<br />
 			<h1>{policy.title}</h1>
+			{/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
 			<div dangerouslySetInnerHTML={{ __html: policy.body }} />
 		</div>
 	);

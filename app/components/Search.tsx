@@ -436,6 +436,7 @@ function SearchResultItem({ goToSearchResult, item }: SearchResultItemProps) {
 				<div>
 					{item.styledTitle ? (
 						<div
+							// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 							dangerouslySetInnerHTML={{
 								__html: item.styledTitle,
 							}}

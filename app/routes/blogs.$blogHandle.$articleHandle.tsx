@@ -47,6 +47,7 @@ export default function Article() {
 
 			{image && <Image data={image} sizes="90vw" loading="eager" />}
 			<div
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 				dangerouslySetInnerHTML={{ __html: contentHtml }}
 				className="article"
 			/>
