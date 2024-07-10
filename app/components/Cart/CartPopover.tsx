@@ -36,10 +36,9 @@ export const CartMenu = ({ cart }: CartProps) => {
 					<CartButton cart={cart} />
 				)}
 			</PopoverTrigger>
-			<PopoverContent className="mr-[5dvw] overscroll-contain w-[90dvw] sm:w-[32dvw] mt-1 max-h-[80dvh]">
-				<ScrollArea className="h-min overflow-scroll max-h-[60dvh] rounded-sm w-full">
-					<CartContent cart={cart} />
-				</ScrollArea>
+			<PopoverContent className="mr-[5dvw] overscroll-contain w-[80dvw] sm:w-[44dvw] md:w-[40dvw] lg:w-[32dvw] max-w-[1000px] mt-1 max-h-[80dvh] p-4">
+				<h1>Cart</h1>
+				<CartContent cart={cart} />
 			</PopoverContent>
 		</Popover>
 	);
@@ -66,7 +65,7 @@ const CartContent = ({ cart }: CartProps) => {
 							return <EmptyCart />;
 
 						return (
-							<div className="flex flex-col">
+							<ScrollArea className="h-min overflow-scroll max-h-[60dvh] rounded-sm w-full pr-2 flex flex-col relative">
 								{cart.lines.edges.map((edge) => {
 									const line = edge.node;
 									return (
@@ -77,12 +76,14 @@ const CartContent = ({ cart }: CartProps) => {
 										/>
 									);
 								})}
-								<p className="">
-									Total: <Money data={cart.cost.totalAmount} />
-								</p>
-								<Button>go to cart</Button>
-								<Button>checkout</Button>
-							</div>
+								<div className="sticky bottom-0 top-0 bg-white flex flex-col pt-4">
+									<p className="">
+										Total: <Money data={cart.cost.totalAmount} />
+									</p>
+									<Button>go to cart</Button>
+									<Button>checkout</Button>
+								</div>
+							</ScrollArea>
 						);
 					}}
 				</Await>
@@ -131,12 +132,7 @@ const CartItem = ({
 
 	return (
 		<div className=" flex m-2 flex-col" key={merchandiseId}>
-			<UpdateLineForm
-				optimisticCart={optimisticCart}
-				quantity={quantity}
-				lineId={line.id}
-				merchandiseId={merchandiseId}
-			/>
+			<UpdateLineForm optimisticCart={optimisticCart} line={line} />
 			<ProductImage
 				width={50}
 				height={50}
@@ -148,7 +144,7 @@ const CartItem = ({
 			<p>
 				{price.currencyCode} {price.amount} x {quantity}
 			</p>
-			<DeleteLineForm optimisticCart={optimisticCart} lineId={line.id} />
+			<DeleteLineForm optimisticCart={optimisticCart} line={line} />
 		</div>
 	);
 };

@@ -5,17 +5,10 @@ import { useEffect, useState } from "react";
 import { Button } from "../Default/Button";
 import type { defaultFormProps } from "./types";
 
-export const UpdateLineForm = ({
-	lineId,
-	merchandiseId,
-	quantity,
-	optimisticCart,
-}: {
-	merchandiseId: string;
-	quantity: number;
-} & defaultFormProps) => {
+export const UpdateLineForm = ({ line, optimisticCart }: defaultFormProps) => {
 	const isOptimistic = optimisticCart.isOptimistic;
 	//TODO: refactor to use useFetcher instead of this
+	const quantity = line.quantity;
 	const [tempValue, setTempValue] = useState(quantity);
 	const tempValueInvalid =
 		tempValue < 0 || Number.isNaN(tempValue) || tempValue === quantity;
@@ -31,8 +24,8 @@ export const UpdateLineForm = ({
 			inputs={{
 				lines: [
 					{
-						id: lineId,
-						merchandiseId: merchandiseId, // forgot this and it wouldn't submit
+						id: line.id,
+						merchandiseId: line.merchandise.id, // forgot this and it wouldn't submit
 						quantity: tempValue,
 					},
 				],
@@ -65,10 +58,9 @@ export const UpdateLineForm = ({
 					// TODO: Might need similar functionality for mobile version. Not tested.
 					event.currentTarget.focus();
 				}}
-				onKeyDown={(event) => {
-					// Submission keys can be defined in the array in lowercase.
-					// Currently only enter key that allows for submission.
+				onKeyDownCapture={(event) => {
 					if (["enter"].includes(event.key.toLowerCase())) {
+						setTempValue(event.currentTarget.valueAsNumber - 1);
 						submit(event.currentTarget);
 					}
 				}}

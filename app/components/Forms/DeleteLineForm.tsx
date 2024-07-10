@@ -3,14 +3,14 @@ import { Button } from "../Default/Button";
 import type { defaultFormProps } from "./types";
 
 export const DeleteLineForm = ({
-	lineId,
+	line,
 	optimisticCart,
 }: defaultFormProps) => {
 	return (
 		<CartForm
 			route="/cart"
 			action={CartForm.ACTIONS.LinesRemove}
-			inputs={{ lineIds: [lineId] }}
+			inputs={{ lineIds: [line.id] }}
 		>
 			<Button type="submit">Delete</Button>
 		</CartForm>

@@ -1,7 +1,8 @@
 import type { OptimisticCart } from "@shopify/hydrogen";
 import type { CartQuery } from "../Main/Layout";
+import type { CartLine } from "../Cart/CartPopover";
 
 export type defaultFormProps = {
 	optimisticCart: OptimisticCart<CartQuery>;
-	lineId: string;
+	line: CartLine;
 };
