@@ -1,8 +1,8 @@
-import type { ProductItemFragment } from "storefrontapi.generated";
 import { Link } from "@remix-run/react";
-import { ProductImage, type ProductImageProps } from "./ProductImage";
 import { Money } from "@shopify/hydrogen";
+import type { ProductItemFragment } from "storefrontapi.generated";
 import { StyledAspectRatio } from "../Default/StyledAspectRatio";
+import { ProductImage, type ProductImageProps } from "./ProductImage";
 
 type CarouselProductItemProps = {
 	product: ProductItemFragment;

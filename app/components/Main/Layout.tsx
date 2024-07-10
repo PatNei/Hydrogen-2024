@@ -1,12 +1,12 @@
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { NavLink } from "@remix-run/react";
+import { FaQuestion } from "react-icons/fa6";
 import type {
 	CartApiQueryFragment,
 	FooterQuery,
 	HeaderQuery,
 } from "storefrontapi.generated";
 import { Header, getHeaderNavLinkStyle } from "~/components/Main/Header";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { FaQuestion } from "react-icons/fa6";
 
 export type CartQuery = Promise<CartApiQueryFragment | null>;
 export type LayoutProps = {

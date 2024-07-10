@@ -1,31 +1,31 @@
-import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useRouteError, isRouteErrorResponse} from '@remix-run/react';
-import {parseGid} from '@shopify/hydrogen';
+import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
+import { parseGid } from "@shopify/hydrogen";
+import type { LoaderFunctionArgs } from "@shopify/remix-oxygen";
 
-export async function loader({request, context}: LoaderFunctionArgs) {
-  const url = new URL(request.url);
+export async function loader({ request, context }: LoaderFunctionArgs) {
+	const url = new URL(request.url);
 
-  const {shop} = await context.storefront.query(ROBOTS_QUERY);
+	const { shop } = await context.storefront.query(ROBOTS_QUERY);
 
-  const shopId = parseGid(shop.id).id;
-  const body = robotsTxtData({url: url.origin, shopId});
+	const shopId = parseGid(shop.id).id;
+	const body = robotsTxtData({ url: url.origin, shopId });
 
-  return new Response(body, {
-    status: 200,
-    headers: {
-      'Content-Type': 'text/plain',
+	return new Response(body, {
+		status: 200,
+		headers: {
+			"Content-Type": "text/plain",
 
-      'Cache-Control': `max-age=${60 * 60 * 24}`,
-    },
-  });
+			"Cache-Control": `max-age=${60 * 60 * 24}`,
+		},
+	});
 }
 
-function robotsTxtData({url, shopId}: {shopId?: string; url?: string}) {
-  const sitemapUrl = url ? `${url}/sitemap.xml` : undefined;
+function robotsTxtData({ url, shopId }: { shopId?: string; url?: string }) {
+	const sitemapUrl = url ? `${url}/sitemap.xml` : undefined;
 
-  return `
+	return `
 User-agent: *
-${generalDisallowRules({sitemapUrl, shopId})}
+${generalDisallowRules({ sitemapUrl, shopId })}
 
 # Google adsbot ignores robots.txt unless specifically named!
 User-agent: adsbot-google
@@ -33,8 +33,8 @@ Disallow: /checkouts/
 Disallow: /checkout
 Disallow: /carts
 Disallow: /orders
-${shopId ? `Disallow: /${shopId}/checkouts` : ''}
-${shopId ? `Disallow: /${shopId}/orders` : ''}
+${shopId ? `Disallow: /${shopId}/checkouts` : ""}
+${shopId ? `Disallow: /${shopId}/orders` : ""}
 Disallow: /*?*oseid=*
 Disallow: /*preview_theme_id*
 Disallow: /*preview_script_id*
@@ -44,11 +44,11 @@ Disallow: /
 
 User-agent: AhrefsBot
 Crawl-delay: 10
-${generalDisallowRules({sitemapUrl, shopId})}
+${generalDisallowRules({ sitemapUrl, shopId })}
 
 User-agent: AhrefsSiteAudit
 Crawl-delay: 10
-${generalDisallowRules({sitemapUrl, shopId})}
+${generalDisallowRules({ sitemapUrl, shopId })}
 
 User-agent: MJ12bot
 Crawl-Delay: 10
@@ -63,19 +63,19 @@ Crawl-delay: 1
  * Online Store has as defaults for their robots.txt
  */
 function generalDisallowRules({
-  shopId,
-  sitemapUrl,
+	shopId,
+	sitemapUrl,
 }: {
-  shopId?: string;
-  sitemapUrl?: string;
+	shopId?: string;
+	sitemapUrl?: string;
 }) {
-  return `Disallow: /admin
+	return `Disallow: /admin
 Disallow: /cart
 Disallow: /orders
 Disallow: /checkouts/
 Disallow: /checkout
-${shopId ? `Disallow: /${shopId}/checkouts` : ''}
-${shopId ? `Disallow: /${shopId}/orders` : ''}
+${shopId ? `Disallow: /${shopId}/checkouts` : ""}
+${shopId ? `Disallow: /${shopId}/orders` : ""}
 Disallow: /carts
 Disallow: /account
 Disallow: /collections/*sort_by*
@@ -105,7 +105,7 @@ Allow: /search/
 Disallow: /search/?*
 Disallow: /apple-app-site-association
 Disallow: /.well-known/shopify/monorail
-${sitemapUrl ? `Sitemap: ${sitemapUrl}` : ''}`;
+${sitemapUrl ? `Sitemap: ${sitemapUrl}` : ""}`;
 }
 
 const ROBOTS_QUERY = `#graphql

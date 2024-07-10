@@ -1,9 +1,9 @@
-import { HeaderQuery } from "storefrontapi.generated";
-import { PredictiveSearchForm, PredictiveSearchResults } from "./Search";
-import { LayoutProps } from "./Main/Layout";
-import { Suspense } from "react";
 import { Await } from "@remix-run/react";
+import { Suspense } from "react";
+import type { HeaderQuery } from "storefrontapi.generated";
 import { CartMain } from "./Cart/Cart";
+import type { LayoutProps } from "./Main/Layout";
+import { PredictiveSearchForm, PredictiveSearchResults } from "./Search";
 
 /**
  * A side bar component with Overlay that works without JavaScript.

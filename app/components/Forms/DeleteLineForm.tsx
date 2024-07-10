@@ -2,7 +2,10 @@ import { CartForm } from "@shopify/hydrogen";
 import { Button } from "../Default/Button";
 import type { defaultFormProps } from "./types";
 
-export const DeleteLineForm = ({ lineId, optimisticCart }: defaultFormProps) => {
+export const DeleteLineForm = ({
+	lineId,
+	optimisticCart,
+}: defaultFormProps) => {
 	return (
 		<CartForm
 			route="/cart"

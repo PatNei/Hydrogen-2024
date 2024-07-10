@@ -5,20 +5,20 @@ import {
 	cartGetIdDefault,
 	cartSetIdDefault,
 	createCartHandler,
+	createCustomerAccountClient,
 	createStorefrontClient,
 	storefrontRedirect,
-	createCustomerAccountClient,
 } from "@shopify/hydrogen";
 import {
+	type AppLoadContext,
 	createRequestHandler,
 	getStorefrontHeaders,
-	type AppLoadContext,
 } from "@shopify/remix-oxygen";
-import { AppSession } from "~/lib/session";
 import {
-	CART_QUERY_FRAGMENT,
 	CART_MUTATION_FRAGMENT,
+	CART_QUERY_FRAGMENT,
 } from "~/graphql/CartQuery";
+import { AppSession } from "~/lib/session";
 
 /**
  * Export a fetch handler in module format.

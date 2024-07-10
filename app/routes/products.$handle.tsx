@@ -1,44 +1,44 @@
-import { forwardRef, Suspense } from "react";
-import {
-	defer,
-	redirect,
-	type LoaderFunctionArgs,
-} from "@shopify/remix-oxygen";
 import {
 	Await,
-	Link,
-	useLoaderData,
-	type MetaFunction,
 	type FetcherWithComponents,
+	Link,
+	type MetaFunction,
+	useLoaderData,
 } from "@remix-run/react";
-import type {
-	ProductFragment,
-	ProductVariantsQuery,
-	ProductVariantFragment,
-} from "storefrontapi.generated";
 import {
+	CartForm,
 	Image,
 	Money,
-	VariantSelector,
+	OptimisticInput,
 	type VariantOption,
+	VariantSelector,
 	getSelectedProductOptions,
-	CartForm,
 	useOptimisticCart,
 	useOptimisticData,
-	OptimisticInput,
 } from "@shopify/hydrogen";
 import type {
 	CartLineInput,
 	SelectedOption,
 } from "@shopify/hydrogen/storefront-api-types";
-import { getVariantUrl } from "~/lib/variants";
-import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/products/ProductQuery";
-import { ProductImage } from "~/components/Product/ProductImage";
-import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
-import { useRootLoaderData } from "~/lib/root-data";
-import { RichText } from "~/components/Default/RichText";
+import {
+	type LoaderFunctionArgs,
+	defer,
+	redirect,
+} from "@shopify/remix-oxygen";
+import { Suspense, forwardRef } from "react";
+import type {
+	ProductFragment,
+	ProductVariantFragment,
+	ProductVariantsQuery,
+} from "storefrontapi.generated";
 import { Button } from "~/components/Default/Button";
+import { RichText } from "~/components/Default/RichText";
+import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
 import { CreateLineForm } from "~/components/Forms/CreateLineForm";
+import { ProductImage } from "~/components/Product/ProductImage";
+import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/products/ProductQuery";
+import { useRootLoaderData } from "~/lib/root-data";
+import { getVariantUrl } from "~/lib/variants";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [{ title: `Hydrogen | ${data?.product.title ?? ""}` }];

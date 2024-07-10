@@ -1,13 +1,13 @@
 import type { MetaFunction } from "@remix-run/react";
-import { CartForm, Image, Money } from "@shopify/hydrogen";
-import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types";
 import { Link } from "@remix-run/react";
-import type { CartApiQueryFragment } from "storefrontapi.generated";
-import { useVariantUrl } from "~/lib/variants";
-import type { CartLine } from "~/components/Cart/CartPopover";
+import { CartForm, Image, Money } from "@shopify/hydrogen";
 import type { CartQueryDataReturn } from "@shopify/hydrogen";
-import { json, type ActionFunctionArgs } from "@shopify/remix-oxygen";
+import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types";
+import { type ActionFunctionArgs, json } from "@shopify/remix-oxygen";
+import type { CartApiQueryFragment } from "storefrontapi.generated";
+import type { CartLine } from "~/components/Cart/CartPopover";
 import { useRootLoaderData } from "~/lib/root-data";
+import { useVariantUrl } from "~/lib/variants";
 export const meta: MetaFunction = () => {
 	return [{ title: "Hydrogen | Cart" }];
 };

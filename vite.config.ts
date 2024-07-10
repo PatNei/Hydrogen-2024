@@ -1,9 +1,10 @@
-import { defineConfig } from "vite";
+import { vitePlugin as remix } from "@remix-run/dev";
 import { hydrogen } from "@shopify/hydrogen/vite";
 import { oxygen } from "@shopify/mini-oxygen/vite";
-import { vitePlugin as remix } from "@remix-run/dev";
-import tsconfigPaths from "vite-tsconfig-paths";
 import { remixDevTools } from "remix-development-tools";
+import { defineConfig } from "vite";
+import biomePlugin from "vite-plugin-biome";
+import tsconfigPaths from "vite-tsconfig-paths";
 const _plugins = [
 	hydrogen(),
 	oxygen(),
@@ -17,6 +18,11 @@ const _plugins = [
 		},
 	}),
 	tsconfigPaths(),
+	biomePlugin({
+		mode: "check",
+		files: ".",
+		applyFixes: true,
+	}),
 ];
 export default defineConfig({
 	ssr: {

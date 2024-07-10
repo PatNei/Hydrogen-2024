@@ -1,23 +1,23 @@
+import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { PopoverTrigger } from "@radix-ui/react-popover";
-import { SlBag } from "react-icons/sl";
+import { Await, useSubmit } from "@remix-run/react";
 import {
 	CartForm,
 	Money,
-	useOptimisticCart,
 	type OptimisticCart,
+	useOptimisticCart,
 } from "@shopify/hydrogen";
-import type { CartApiQueryFragment } from "storefrontapi.generated";
-import type { CartQuery } from "../Main/Layout";
 import { ReactNode, Suspense, useEffect, useRef, useState } from "react";
-import { Await, useSubmit } from "@remix-run/react";
-import { ProductImage } from "../Product/ProductImage";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
-import { UpdateLineForm } from "../Forms/UpdateLineForm";
-import { DeleteLineForm } from "../Forms/DeleteLineForm";
+import { SlBag } from "react-icons/sl";
+import type { CartApiQueryFragment } from "storefrontapi.generated";
 import { Button } from "../Default/Button";
+import { DeleteLineForm } from "../Forms/DeleteLineForm";
+import { UpdateLineForm } from "../Forms/UpdateLineForm";
 import type { defaultFormProps } from "../Forms/types";
+import type { CartQuery } from "../Main/Layout";
+import { ProductImage } from "../Product/ProductImage";
 
 type CartProps = {
 	cart: CartQuery;

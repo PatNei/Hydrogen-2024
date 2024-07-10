@@ -1,25 +1,25 @@
 import {
-	useNonce,
-	useOptimisticCart,
-	createCartHandler,
-} from "@shopify/hydrogen";
-import { defer, type LoaderFunctionArgs } from "@shopify/remix-oxygen";
-import {
 	Links,
 	Meta,
 	Outlet,
 	Scripts,
-	useRouteError,
-	useLoaderData,
 	ScrollRestoration,
-	isRouteErrorResponse,
 	type ShouldRevalidateFunction,
+	isRouteErrorResponse,
+	useLoaderData,
+	useRouteError,
 } from "@remix-run/react";
-import favicon from "./assets/favicon.svg";
-import tailwindStyles from "./tailwind.css?url";
-import { Layout } from "~/components/Main/Layout";
-import { FOOTER_QUERY, HEADER_QUERY } from "./graphql/shop/ShopQuery";
+import {
+	createCartHandler,
+	useNonce,
+	useOptimisticCart,
+} from "@shopify/hydrogen";
+import { type LoaderFunctionArgs, defer } from "@shopify/remix-oxygen";
 import { useState } from "react";
+import { Layout } from "~/components/Main/Layout";
+import favicon from "./assets/favicon.svg";
+import { FOOTER_QUERY, HEADER_QUERY } from "./graphql/shop/ShopQuery";
+import tailwindStyles from "./tailwind.css?url";
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations

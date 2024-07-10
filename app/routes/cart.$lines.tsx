@@ -1,4 +1,4 @@
-import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import { type LoaderFunctionArgs, redirect } from "@shopify/remix-oxygen";
 
 /**
  * Automatically creates a new cart based on the URL and redirects straight to checkout.
@@ -18,51 +18,51 @@ import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
  *
  * ```
  */
-export async function loader({request, context, params}: LoaderFunctionArgs) {
-  const {cart} = context;
-  const {lines} = params;
-  if (!lines) return redirect('/cart');
-  const linesMap = lines.split(',').map((line) => {
-    const lineDetails = line.split(':');
-    const variantId = lineDetails[0];
-    const quantity = Number.parseInt(lineDetails[1], 10);
+export async function loader({ request, context, params }: LoaderFunctionArgs) {
+	const { cart } = context;
+	const { lines } = params;
+	if (!lines) return redirect("/cart");
+	const linesMap = lines.split(",").map((line) => {
+		const lineDetails = line.split(":");
+		const variantId = lineDetails[0];
+		const quantity = Number.parseInt(lineDetails[1], 10);
 
-    return {
-      merchandiseId: `gid://shopify/ProductVariant/${variantId}`,
-      quantity,
-    };
-  });
+		return {
+			merchandiseId: `gid://shopify/ProductVariant/${variantId}`,
+			quantity,
+		};
+	});
 
-  const url = new URL(request.url);
-  const searchParams = new URLSearchParams(url.search);
+	const url = new URL(request.url);
+	const searchParams = new URLSearchParams(url.search);
 
-  const discount = searchParams.get('discount');
-  const discountArray = discount ? [discount] : [];
+	const discount = searchParams.get("discount");
+	const discountArray = discount ? [discount] : [];
 
-  // create a cart
-  const result = await cart.create({
-    lines: linesMap,
-    discountCodes: discountArray,
-  });
+	// create a cart
+	const result = await cart.create({
+		lines: linesMap,
+		discountCodes: discountArray,
+	});
 
-  const cartResult = result.cart;
+	const cartResult = result.cart;
 
-  if (result.errors?.length || !cartResult) {
-    throw new Response('Link may be expired. Try checking the URL.', {
-      status: 410,
-    });
-  }
+	if (result.errors?.length || !cartResult) {
+		throw new Response("Link may be expired. Try checking the URL.", {
+			status: 410,
+		});
+	}
 
-  // Update cart id in cookie
-  const headers = cart.setCartId(cartResult.id);
+	// Update cart id in cookie
+	const headers = cart.setCartId(cartResult.id);
 
-  // redirect to checkout
-  if (cartResult.checkoutUrl) {
-    return redirect(cartResult.checkoutUrl, {headers});
-  }
-    throw new Error('No checkout URL found');
+	// redirect to checkout
+	if (cartResult.checkoutUrl) {
+		return redirect(cartResult.checkoutUrl, { headers });
+	}
+	throw new Error("No checkout URL found");
 }
 
 export default function Component() {
-  return null;
+	return null;
 }

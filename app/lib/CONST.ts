@@ -1,1 +1,1 @@
-export const optimisticQuantityID = "optimisticQuantity"
+export const optimisticQuantityID = "optimisticQuantity";

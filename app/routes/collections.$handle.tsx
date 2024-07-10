@@ -1,14 +1,14 @@
-import { json, redirect, type LoaderFunctionArgs } from "@shopify/remix-oxygen";
-import { useLoaderData, Link, type MetaFunction } from "@remix-run/react";
+import { Link, type MetaFunction, useLoaderData } from "@remix-run/react";
 import {
-	Pagination,
-	getPaginationVariables,
 	Image,
 	Money,
+	Pagination,
+	getPaginationVariables,
 } from "@shopify/hydrogen";
+import { type LoaderFunctionArgs, json, redirect } from "@shopify/remix-oxygen";
 import type { ProductItemFragment } from "storefrontapi.generated";
-import { useVariantUrl } from "~/lib/variants";
 import { COLLECTION_QUERY } from "~/graphql/products/ProductQuery";
+import { useVariantUrl } from "~/lib/variants";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [{ title: `Hydrogen | ${data?.collection.title ?? ""} Collection` }];

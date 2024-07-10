@@ -1,14 +1,14 @@
-import { Await, NavLink } from "@remix-run/react";
-import { Suspense } from "react";
-import type { HeaderQuery } from "storefrontapi.generated";
-import type { LayoutProps } from "./Layout";
-import { useRootLoaderData } from "~/lib/root-data";
 import {
 	NavigationMenu,
 	NavigationMenuItem,
 	NavigationMenuLink,
 	NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { Await, NavLink } from "@remix-run/react";
+import { Suspense } from "react";
+import type { HeaderQuery } from "storefrontapi.generated";
+import { useRootLoaderData } from "~/lib/root-data";
+import type { LayoutProps } from "./Layout";
 
 import {
 	CardContent,
@@ -18,8 +18,8 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 
-import { CartMenu } from "../Cart/CartPopover";
 import { useOptimisticCart } from "@shopify/hydrogen";
+import { CartMenu } from "../Cart/CartPopover";
 
 type HeaderProps = Pick<LayoutProps, "header" | "cart">;
 
