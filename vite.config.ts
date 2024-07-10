@@ -19,7 +19,7 @@ const _plugins = [
 	}),
 	tsconfigPaths(),
 	biomePlugin({
-		mode: "check",
+		mode: "lint", // Be carefull with check and format as it uses a lot of ressources, better to just have it lint shit.
 		files: ".",
 		applyFixes: false,
 	}),
