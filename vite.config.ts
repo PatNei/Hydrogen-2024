@@ -20,7 +20,7 @@ const _plugins = [
 	tsconfigPaths(),
 	biomePlugin({
 		mode: "check",
-		files: "",
+		files: ".",
 		applyFixes: false,
 		failOnError: true,
 	}),
