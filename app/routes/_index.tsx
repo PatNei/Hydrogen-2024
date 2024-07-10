@@ -3,7 +3,7 @@ import { Pagination, getPaginationVariables } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, json } from "@shopify/remix-oxygen";
 import { ProductCollectionPagination } from "~/components/Product/ProductCollection";
 import { ProductsGrid } from "~/components/Product/ProductGrid";
-import { CATALOG_QUERY } from "~/graphql/products/ProductQuery";
+import { CATALOG_QUERY } from "~/graphql/products/CatalogQuery";
 
 const PAGE_BY_AMOUNT_OF_PRODUCTS = 8;
 
