@@ -1,8 +1,8 @@
 import { Await } from "@remix-run/react";
 import { Suspense } from "react";
 import type { HeaderQuery } from "storefrontapi.generated";
+import type { LayoutProps } from "../components/Main/Layout";
 import { CartMain } from "./Cart/Cart";
-import type { LayoutProps } from "./Main/Layout";
 import { PredictiveSearchForm, PredictiveSearchResults } from "./Search";
 
 /**

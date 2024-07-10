@@ -6,7 +6,7 @@ import {
 	NoSearchResults,
 	SearchForm,
 	SearchResults,
-} from "~/components/Search";
+} from "~/deprecated/Search";
 
 export const meta: MetaFunction = () => {
 	return [{ title: "Hydrogen | Search" }];

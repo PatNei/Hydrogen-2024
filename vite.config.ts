@@ -20,8 +20,9 @@ const _plugins = [
 	tsconfigPaths(),
 	biomePlugin({
 		mode: "check",
-		files: ".",
-		applyFixes: true,
+		files: "",
+		applyFixes: false,
+		failOnError: true,
 	}),
 ];
 export default defineConfig({
