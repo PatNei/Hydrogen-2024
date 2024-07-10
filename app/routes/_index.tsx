@@ -1,13 +1,10 @@
-import { json, type LoaderFunctionArgs } from "@shopify/remix-oxygen";
-import { useLoaderData, type MetaFunction } from "@remix-run/react";
+import { type MetaFunction, useLoaderData } from "@remix-run/react";
 import { Pagination, getPaginationVariables } from "@shopify/hydrogen";
-import type { ProductItemFragment } from "storefrontapi.generated";
-import { useVariantUrl } from "~/lib/variants";
+import { type LoaderFunctionArgs, json } from "@shopify/remix-oxygen";
+import { ProductsGrid } from "~/components/Product/ProductGrid";
 import { CATALOG_QUERY } from "~/graphql/products/ProductQuery";
-import { ProductCard } from "~/components/Product/ProductCard";
-import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
 
-const AMOUNT_OF_PRODUCTS = 8;
+const PAGE_BY_AMOUNT_OF_PRODUCTS = 8;
 
 export const meta: MetaFunction<typeof loader> = () => {
 	return [{ title: "Hydrogen | Products" }];
@@ -16,7 +13,7 @@ export const meta: MetaFunction<typeof loader> = () => {
 export async function loader({ request, context }: LoaderFunctionArgs) {
 	const { storefront } = context;
 	const paginationVariables = getPaginationVariables(request, {
-		pageBy: AMOUNT_OF_PRODUCTS,
+		pageBy: PAGE_BY_AMOUNT_OF_PRODUCTS,
 	});
 	const { products } = await storefront.query(CATALOG_QUERY, {
 		variables: { ...paginationVariables },
@@ -42,63 +39,6 @@ export default function Collection() {
 					</>
 				)}
 			</Pagination>
-		</div>
-	);
-}
-
-function ProductsGrid({ products }: { products: ProductItemFragment[] }) {
-	return (
-		<div className="columns-1 break-inside-avoid-column clear-both sm:columns-2 lg:columns-3 odd:float-right even:float-left max-w-full">
-			{products.map((product, index) => {
-				return (
-					<ProductItem
-						key={product.id}
-						product={product}
-						loading={index < 8 ? "eager" : undefined}
-					/>
-				);
-			})}
-		</div>
-	);
-}
-
-function ProductItem({
-	product,
-	loading,
-}: {
-	product: ProductItemFragment;
-	loading?: "eager" | "lazy";
-	className?: string;
-}) {
-	const variant = product.variants.nodes[0];
-	const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
-	return (
-		<div className="flex overflow-hidden truncate mt-12 even:mt-14 break-inside-avoid first:my-0 flex-col gap-4">
-			{product.images.nodes.length > 0 ? (
-				product.images.nodes.map((_image, index) => {
-					if (index >= 1) {
-						return;
-					}
-					return (
-						<ProductCard
-							className="first:mt-0"
-							key={`CPI-${_image.id}`}
-							product={product}
-							variantUrl={variantUrl}
-							productImageProps={{ image: _image, productTitle: product.title }}
-						/>
-					);
-				})
-			) : (
-				<ProductCard
-					product={product}
-					productImageProps={{ productTitle: product.title }}
-					variantUrl={variantUrl}
-				/>
-			)}
-			<SeperatedBlockQuote>
-				<p>{product.title}</p>
-			</SeperatedBlockQuote>
 		</div>
 	);
 }
