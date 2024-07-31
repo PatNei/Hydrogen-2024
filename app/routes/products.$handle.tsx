@@ -36,7 +36,8 @@ import { RichText } from "~/components/Default/RichText";
 import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
 import { CreateLineForm } from "~/components/Forms/CreateLineForm";
 import { ProductImage } from "~/components/Product/ProductImage";
-import { PRODUCT_QUERY, VARIANTS_QUERY } from "~/graphql/products/ProductQuery";
+import { PRODUCT_QUERY } from "~/graphql/products/ProductQuery";
+import { VARIANTS_QUERY } from "~/graphql/products/ProductVariantQuery";
 import { useRootLoaderData } from "~/lib/root-data";
 import { getVariantUrl } from "~/lib/variants";
 
