@@ -36,13 +36,17 @@ export const CartMenu = ({ cart }: CartProps) => {
 					<CartButton cart={cart} />
 				)}
 			</PopoverTrigger>
-			<PopoverContent className="mr-[5dvw] overscroll-contain w-[80dvw] sm:w-[44dvw] md:w-[40dvw] lg:w-[32dvw] max-w-[1000px] mt-1 max-h-[80dvh] p-4">
+			<PopoverContent
+				align="end"
+				className="mt-1 mr-2 overscroll-contain w-[80dvw] sm:w-[44dvw] md:w-[40dvw] lg:w-[32dvw] max-w-[400px] max-h-[80dvh] p-4"
+			>
 				<h1>Cart</h1>
 				<CartContent cart={cart} />
 			</PopoverContent>
 		</Popover>
 	);
 };
+
 
 const OptimisticCartContent = ({ cart }: CartProps) => {
 	const optimisticCart = useOptimisticCart(cart);
@@ -97,12 +101,12 @@ const CartButton = ({ cart }: CartProps) => {
 		<Suspense fallback={<CartIcon />}>
 			<Await resolve={cart}>
 				{(cart) => {
-					if (!cart) return <CartIcon />;
+					if (!cart) return <p>Cart ({0})</p>;
 					const nodes = cart.lines.edges.map((edge) => {
 						return edge.node;
 					});
 					const amountOfLines = extractTotalQuantity(nodes);
-					return <CartIcon amount={amountOfLines} />;
+					return <p>Cart ({amountOfLines})</p>;
 				}}
 			</Await>
 		</Suspense>
@@ -112,7 +116,7 @@ const CartButton = ({ cart }: CartProps) => {
 const OptimisticCartButton = ({ cart }: CartProps) => {
 	const optimisticCart = useOptimisticCart(cart);
 	const amountOfLines = extractTotalQuantity(optimisticCart.lines?.nodes);
-	return <CartIcon amount={amountOfLines} text="+" />;
+	return <p>Cart {amountOfLines}</p>;
 };
 
 const CartItem = ({

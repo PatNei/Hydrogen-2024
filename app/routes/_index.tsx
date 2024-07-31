@@ -3,6 +3,7 @@ import { Pagination, getPaginationVariables } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, json } from "@shopify/remix-oxygen";
 import { ProductCollectionPagination } from "~/components/Product/ProductCollection";
 import { ProductsGrid } from "~/components/Product/ProductGrid";
+import { ProductItem } from "~/components/Product/ProductItem";
 import { CATALOG_QUERY } from "~/graphql/products/CatalogQuery";
 
 const PAGE_BY_AMOUNT_OF_PRODUCTS = 8;
@@ -34,7 +35,19 @@ export default function Collection() {
 							<PreviousLink>
 								{isLoading ? "Loading..." : <span>↑ Load previous</span>}
 							</PreviousLink>
-							<ProductsGrid products={nodes} />
+							<ProductsGrid itemAmount={nodes.length}>
+								{products.nodes.map((product, index) => {
+									return (
+										<ProductItem
+											key={product.id}
+											product={product}
+											loading={index < 8 ? "eager" : undefined}
+											isLoading={isLoading}
+
+										/>
+									);
+								})}
+							</ProductsGrid>
 							<NextLink>
 								{isLoading ? "Loading..." : <span>Load more ↓</span>}
 							</NextLink>

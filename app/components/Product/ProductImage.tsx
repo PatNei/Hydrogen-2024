@@ -27,8 +27,6 @@ export const ProductImage = ({
 				className={`${className}`}
 				hidden={invisible}
 				key={"image-placeholder"}
-				height={height}
-				width={width}
 				alt={`${productTitle}-placeholder-image`}
 				src={invisible ? "" : placeholderImage}
 				aria-hidden={invisible}
@@ -36,12 +34,10 @@ export const ProductImage = ({
 		);
 
 	return (
-		<Image
+		<img
 			className={`${className}`}
 			hidden={invisible}
 			key={image.id}
-			height={height}
-			width={width}
 			alt={`${productTitle}-${image.altText}`}
 			src={invisible ? "" : image.url}
 			aria-hidden={invisible}

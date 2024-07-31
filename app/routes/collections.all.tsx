@@ -32,7 +32,7 @@ export default function Collection() {
 
 	return (
 		<div className="collection">
-			<h1>Products</h1>
+			<h1 >Products</h1>
 			<Pagination connection={products}>
 				{({ nodes, isLoading, PreviousLink, NextLink }) => (
 					<>

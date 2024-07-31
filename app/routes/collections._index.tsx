@@ -69,7 +69,6 @@ function CollectionItem({
 			to={`/collections/${collection.handle}`}
 			prefetch="intent"
 		>
-			<span> - </span>
 			{collection?.image && (
 				<Image
 					alt={collection.image.altText || collection.title}

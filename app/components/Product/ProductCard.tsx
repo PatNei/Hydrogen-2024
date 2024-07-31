@@ -34,16 +34,16 @@ export const ProductCard = ({
 						className="min-w-full max-w-full w-full min-h-full max-h-full h-fullabsolute top-0 left-0"
 					/>
 				</Link>
-				<div
+				{/* <div
 					className="hidden peer-hover:flex
 			transition ease-in-out delay-300 duration-150 flex-col gap-0 opacity-80 bg-black h-min max-h-min absolute bottom-0 left-0 text-center w-full min-w-full max-w-full text-white"
 				>
-					<h1 className="h-full max-h-full">{product.title}</h1>
+					<h1 className="h-full max-h-full">{product.title.toLowerCase()}</h1>
 					<Money
 						className="h-full max-h-full"
 						data={product.priceRange.minVariantPrice}
 					/>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);

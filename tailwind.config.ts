@@ -11,8 +11,22 @@ const config = {
 	],
 	prefix: "",
 	theme: {
+		fontSize: {
+			sm: "1em",
+			base: "0.2em",
+			lg: "1em",
+			xl: "1em",
+			xxl: "1em",
+		},
 		fontFamily: {
-			sans: ["Palatino", "Georgia", "Times", "Times New Roman", "serif"],
+			sans: [
+				"Palatino",
+				"Times New Roman",
+				"Monospace",
+				"Georgia",
+				"Times",
+				"serif",
+			],
 		},
 		container: {
 			center: true,

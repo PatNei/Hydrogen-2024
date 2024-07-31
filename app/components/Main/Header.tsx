@@ -45,7 +45,7 @@ export function Header({
 	const optimisticCart = useOptimisticCart(cart);
 	const pages = [{ title: "collections", url: "collections" }];
 	return (
-		<div className={`flex min-w-full max-w-full h-full ${className}`}>
+		<nav className={`min-w-full max-h-[12dvh] max-w-full ${className}`}>
 			<NavigationMenu className="min-w-full max-w-full h-full flex content-start justify-between">
 				<NavigationMenuList className="flex flex-col content-start text-start justify-start">
 					<NavigationMenuItem>
@@ -118,7 +118,7 @@ export function Header({
 				/>
 				<HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
 			</header> */}
-		</div>
+		</nav>
 	);
 }
 

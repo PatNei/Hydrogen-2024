@@ -35,6 +35,7 @@ import { Button } from "~/components/Default/Button";
 import { RichText } from "~/components/Default/RichText";
 import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
 import { CreateLineForm } from "~/components/Forms/CreateLineForm";
+import { ProductsGrid } from "~/components/Product/ProductGrid";
 import { ProductImage } from "~/components/Product/ProductImage";
 import { PRODUCT_QUERY } from "~/graphql/products/ProductQuery";
 import { VARIANTS_QUERY } from "~/graphql/products/ProductVariantQuery";
@@ -132,14 +133,8 @@ export default function Product() {
 	const optimisticCart = useOptimisticCart(cart);
 	const { selectedVariant } = product;
 	return (
-		<div className="mt-4">
-			<SeperatedBlockQuote>
-				<p>{product.title}</p>
-				{/* biome-ignore lint/security/noDangerouslySetInnerHtml: We might need to reconsider this but for now it is allowed. Purifying the input could be the way */}
-				<div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
-				<ProductPrice selectedVariant={selectedVariant} />
-			</SeperatedBlockQuote>
-			<div className="flex flex-col max-w-full w-full relative min-h-[70dvh]">
+		<div className="flex flex-col">
+			<ProductsGrid itemAmount={product.images.nodes.length}>
 				{product.images.nodes.map((_image) => {
 					return (
 						<ProductImage
@@ -149,8 +144,16 @@ export default function Product() {
 						/>
 					);
 				})}
-			</div>
-			<div className="sticky bottom-0 left-0 bg-white">
+			</ProductsGrid>
+			{/* </div> */}
+			<div className="sticky bottom-0 left-0 pt-4 bg-white">
+				<SeperatedBlockQuote>
+					<p>{product.title}</p>
+					{/* biome-ignore lint/security/noDangerouslySetInnerHtml: We might need to reconsider this but for now it is allowed. Purifying the input could be the way */}
+					<div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+					<ProductPrice selectedVariant={selectedVariant} />
+				</SeperatedBlockQuote>
+				{/* <div className="flex flex-col max-w-[40dvw] columns-2  w-full relative min-h-[70dvh]"> */}
 				<Await
 					errorElement="There was a problem loading product variants"
 					resolve={variants}
