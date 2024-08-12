@@ -21,7 +21,7 @@ export function ProductItem({
 	const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 	return (
 		<div
-			className={`flex overflow-hidden truncate mt-12 even:mt-14 break-inside-avoid first:my-0 flex-col gap-2 ${className}`}
+			className={`flex overflow-hidden mt-4 even:mt-5 break-inside-avoid first:my-0 flex-col border-4 p-2 ${className}`}
 		>
 			{product.images.nodes.length > 0 ? (
 				product.images.nodes.map((_image, index) => {
@@ -45,20 +45,18 @@ export function ProductItem({
 					variantUrl={variantUrl}
 				/>
 			)}
-			<SeperatedBlockQuote>
 				<NavLink end to={variantUrl}>
 					{({ isActive, isPending }) => {
 						return (
-							<div>
-								<P className={`${isPending ? "transform scale-y-[-1]" : ""}`}>
-									{product.title.toLowerCase()}
+							<div className="w-full flex justify-between	pt-2 p-1">
+								<P className={`w-2/3 ${isPending ? "transform scale-y-[-1]" : ""}`}>
+									{product.title.toLowerCase()} 
 								</P>
-								<Money data={product.priceRange.minVariantPrice} />
+								<Money className="text-base lowercase" data={product.priceRange.minVariantPrice} />
 							</div>
 						);
 					}}
 				</NavLink>
-			</SeperatedBlockQuote>
 		</div>
 	);
 }

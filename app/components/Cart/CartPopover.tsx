@@ -102,12 +102,12 @@ export const CartButton = ({ cart }: CartProps) => {
 		<Suspense fallback={<CartIcon />}>
 			<Await resolve={cart}>
 				{(cart) => {
-					if (!cart) return <P>cart ({0})</P>;
+					if (!cart) return <p>cart ({0})</p>;
 					const nodes = cart.lines.edges.map((edge) => {
 						return edge.node;
 					});
 					const amountOfLines = extractTotalQuantity(nodes);
-					return <P>cart ({amountOfLines})</P>;
+					return <p>cart ({amountOfLines})</p>;
 				}}
 			</Await>
 		</Suspense>

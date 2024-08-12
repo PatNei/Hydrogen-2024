@@ -12,11 +12,15 @@ const config = {
 	prefix: "",
 	theme: {
 		fontSize: {
-			sm: "1em",
-			base: "0.2em",
-			lg: "1em",
+			sm: "0.84em",
+			base: "0.89em",
+			md: "0.94em",
+			lg: "0.98em",
 			xl: "1em",
-			xxl: "1em",
+			xxl: "1.2em",
+		},
+		fontWeight: {
+			normal:"font-weight:900",
 		},
 		fontFamily: {
 			sans: [

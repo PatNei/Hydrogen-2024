@@ -1,4 +1,5 @@
 import { RichText as RichText_ } from "@shopify/hydrogen";
+import { P } from "./P";
 // import type { RichTextProps } from "@shopify/hydrogen-react/RichText";
 
 export const RichText = ({ metaFieldData }: { metaFieldData: string }) => {

@@ -55,17 +55,9 @@ export function Header({
 							<NavLink
 								prefetch="intent"
 								to="/"
-								className={getHeaderNavLinkStyle}
 								end
 							>
-								{({ isActive, isPending }) => {
-									if (isPending) return <P className="underline">Loading..</P>;
-									if (isActive)
-										return (
-											<P className="underline text-purple-700">{shop.name}</P>
-										);
-									return <P className="underline">{shop.name}</P>; // TODO: Remove this
-								}}
+								{shop.name}
 							</NavLink>
 						</NavigationMenuLink>
 					</NavigationMenuItem>
