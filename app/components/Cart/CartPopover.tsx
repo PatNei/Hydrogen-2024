@@ -18,6 +18,7 @@ import { UpdateLineForm } from "../Forms/UpdateLineForm";
 import type { defaultFormProps } from "../Forms/types";
 import type { CartQuery } from "../Main/Layout";
 import { ProductImage } from "../Product/ProductImage";
+import { P } from "../Default/P";
 
 type CartProps = {
 	cart: CartQuery;
@@ -81,9 +82,9 @@ const CartContent = ({ cart }: CartProps) => {
 									);
 								})}
 								<div className="sticky bottom-0 top-0 bg-white flex flex-col pt-4">
-									<p className="">
+									<P className="">
 										Total: <Money data={cart.cost.totalAmount} />
-									</p>
+									</P>
 									<Button>go to cart</Button>
 									<Button>checkout</Button>
 								</div>
@@ -96,17 +97,17 @@ const CartContent = ({ cart }: CartProps) => {
 	);
 };
 
-const CartButton = ({ cart }: CartProps) => {
+export const CartButton = ({ cart }: CartProps) => {
 	return (
 		<Suspense fallback={<CartIcon />}>
 			<Await resolve={cart}>
 				{(cart) => {
-					if (!cart) return <p>Cart ({0})</p>;
+					if (!cart) return <P>cart ({0})</P>;
 					const nodes = cart.lines.edges.map((edge) => {
 						return edge.node;
 					});
 					const amountOfLines = extractTotalQuantity(nodes);
-					return <p>Cart ({amountOfLines})</p>;
+					return <P>cart ({amountOfLines})</P>;
 				}}
 			</Await>
 		</Suspense>
@@ -116,7 +117,7 @@ const CartButton = ({ cart }: CartProps) => {
 const OptimisticCartButton = ({ cart }: CartProps) => {
 	const optimisticCart = useOptimisticCart(cart);
 	const amountOfLines = extractTotalQuantity(optimisticCart.lines?.nodes);
-	return <p>Cart {amountOfLines}</p>;
+	return <P>cart {amountOfLines}</P>;
 };
 
 const CartItem = ({
@@ -143,11 +144,11 @@ const CartItem = ({
 				productTitle={product.title}
 				image={image ?? undefined}
 			/>
-			<p>{variantTitle}</p>
-			<p>{product.title}</p>
-			<p>
+			<P>{variantTitle}</P>
+			<P>{product.title}</P>
+			<P>
 				{price.currencyCode} {price.amount} x {quantity}
-			</p>
+			</P>
 			<DeleteLineForm optimisticCart={optimisticCart} line={line} />
 		</div>
 	);
@@ -168,10 +169,10 @@ const CartIcon = ({ amount = 0, text }: { amount?: number; text?: string }) => {
 					over99 ? "-right-2.5" : over10 ? "-right-1.5" : "right-0"
 				}`}
 			>
-				<p className="text-center">
+				<P className="text-center">
 					{text}
 					{over99 ? "+99" : amount}
-				</p>
+				</P>
 			</div>
 		</div>
 	);

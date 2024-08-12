@@ -43,6 +43,7 @@ export default function Collection() {
 											product={product}
 											loading={index < 8 ? "eager" : undefined}
 											isLoading={isLoading}
+											className="max-w-80"
 
 										/>
 									);

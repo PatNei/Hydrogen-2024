@@ -32,6 +32,7 @@ import type {
 	ProductVariantsQuery,
 } from "storefrontapi.generated";
 import { Button } from "~/components/Default/Button";
+import { P } from "~/components/Default/P";
 import { RichText } from "~/components/Default/RichText";
 import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
 import { CreateLineForm } from "~/components/Forms/CreateLineForm";
@@ -148,7 +149,7 @@ export default function Product() {
 			{/* </div> */}
 			<div className="sticky bottom-0 left-0 pt-4 bg-white">
 				<SeperatedBlockQuote>
-					<p>{product.title}</p>
+					<P>{product.title}</P>
 					{/* biome-ignore lint/security/noDangerouslySetInnerHtml: We might need to reconsider this but for now it is allowed. Purifying the input could be the way */}
 					<div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
 					<ProductPrice selectedVariant={selectedVariant} />
@@ -192,7 +193,7 @@ function ProductPrice({
 		<div className="flex flex-col">
 			{selectedVariant.compareAtPrice && (
 				<div>
-					<p>SALE!!!!!!!!!!</p>
+					<P>SALE!!!!!!!!!!</P>
 					<Money
 						className="line-through opacity-30"
 						data={selectedVariant.compareAtPrice}

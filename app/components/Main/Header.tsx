@@ -4,7 +4,7 @@ import {
 	NavigationMenuLink,
 	NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Await, NavLink } from "@remix-run/react";
+import { Await, Link } from "@remix-run/react";
 import { Suspense } from "react";
 import type { HeaderQuery } from "storefrontapi.generated";
 import { useRootLoaderData } from "~/lib/root-data";
@@ -19,7 +19,9 @@ import {
 } from "@/components/ui/card";
 
 import { useOptimisticCart } from "@shopify/hydrogen";
-import { CartMenu } from "../Cart/CartPopover";
+import { CartButton, CartMenu } from "../Cart/CartPopover";
+import { NavLink } from "../Remix/NavLink";
+import { P } from "../Default/P";
 
 type HeaderProps = Pick<LayoutProps, "header" | "cart">;
 
@@ -57,27 +59,27 @@ export function Header({
 								end
 							>
 								{({ isActive, isPending }) => {
-									if (isPending) return <p className="underline">Loading..</p>;
+									if (isPending) return <P className="underline">Loading..</P>;
 									if (isActive)
 										return (
-											<p className="underline text-purple-700">{shop.name}</p>
+											<P className="underline text-purple-700">{shop.name}</P>
 										);
-									return <p className="underline">{shop.name}</p>; // TODO: Remove this
+									return <P className="underline">{shop.name}</P>; // TODO: Remove this
 								}}
 							</NavLink>
 						</NavigationMenuLink>
 					</NavigationMenuItem>
-					<NavigationMenuItem className="">
-						<p>Some text</p>
+					<NavigationMenuItem>
+						<NavLink to={"/cart"}>
+							<CartButton cart={cart} />
+						</NavLink>
 					</NavigationMenuItem>
 					<NavigationMenuItem className="flex gap-2">
 						{pages.map((page) => {
 							return (
-								<NavigationMenuLink key={`nml-${page.title}`}>
 									<NavLink end key={page.title} prefetch="intent" to={page.url}>
-										<p className="underline font-extralight">{page.title}</p>
+										{page.title}
 									</NavLink>
-								</NavigationMenuLink>
 							);
 						})}
 						{(menu || FALLBACK_HEADER_MENU).items.map((item) => {
@@ -92,21 +94,15 @@ export function Header({
 									: item.url;
 							if (url === "/") return;
 							return (
-								<NavigationMenuLink key={`nml-${item.id}`}>
 									<NavLink end key={item.id} prefetch="intent" to={url}>
-										<p className="underline font-extralight">
 											{item.title.toLowerCase()}
-										</p>
 									</NavLink>
-								</NavigationMenuLink>
 							);
 						})}
 					</NavigationMenuItem>
 				</NavigationMenuList>
 				<NavigationMenuList className="flex">
-					<NavigationMenuItem>
-						<CartMenu cart={cart} />
-					</NavigationMenuItem>
+
 				</NavigationMenuList>
 			</NavigationMenu>
 			{/* 
@@ -130,10 +126,10 @@ export const CartItem = () => {
 				<CardDescription>Card Description</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<p>Card Content</p>
+				<P>Card Content</P>
 			</CardContent>
 			<CardFooter>
-				<p>Card Footer</p>
+				<P>Card Footer</P>
 			</CardFooter>
 		</>
 	);

@@ -7,7 +7,7 @@ export const RichText = ({ metaFieldData }: { metaFieldData: string }) => {
 			data={metaFieldData}
 			components={{
 				paragraph({ node }) {
-					return <p className="customClass">{node.children}</p>;
+					return <P className="customClass">{node.children}</P>;
 				},
 			}}
 		/>

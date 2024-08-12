@@ -4,6 +4,7 @@ import { SeperatedBlockQuote } from "../Default/SeperatedBlockQuote";
 import { ProductCard } from "./ProductCard";
 import { NavLink } from "@remix-run/react";
 import { Money } from "@shopify/hydrogen-react";
+import { P } from "../Default/P";
 
 export function ProductItem({
 	product,
@@ -49,9 +50,9 @@ export function ProductItem({
 					{({ isActive, isPending }) => {
 						return (
 							<div>
-								<p className={`${isPending ? "transform scale-y-[-1]" : ""}`}>
+								<P className={`${isPending ? "transform scale-y-[-1]" : ""}`}>
 									{product.title.toLowerCase()}
-								</p>
+								</P>
 								<Money data={product.priceRange.minVariantPrice} />
 							</div>
 						);

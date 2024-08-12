@@ -7,6 +7,7 @@ import {
 } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, json, redirect } from "@shopify/remix-oxygen";
 import type { ProductItemFragment } from "storefrontapi.generated";
+import { P } from "~/components/Default/P";
 import { ProductsGrid } from "~/components/Product/ProductGrid";
 import { ProductItem } from "~/components/Product/ProductItem";
 import { COLLECTION_QUERY } from "~/graphql/products/CollectionsQuery";
@@ -45,7 +46,7 @@ export default function Collection() {
 	return (
 		<div className="flex flex-col">
 			<h1>{collection.title}</h1>
-			<p className="collection-description">{collection.description}</p>
+			<P className="collection-description">{collection.description}</P>
 			<Pagination connection={collection.products}>
 				{({ nodes, isLoading, PreviousLink, NextLink }) => (
 					<>
