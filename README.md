@@ -8,7 +8,18 @@
 - TODO: Implement SEO
 - TODO: Implement Analytics
 - TODO: Implement Similar Items Suggestions
-
+- TODO: To rækker
+    - space between
+- TODO: Vælg størrelse
+    - Bless-service.de
+    - Altså bokse
+    - Mobile version skal være dropdown
+- TODO: Ingen cart icon men text
+- TODO: Fjern Pop Over skal bare redirecte til cart
+- TODO: Ingen infinite scroll men paginations ala Archivings.net
+- TODO: Collections skal være magen til designers på Archivings.net (Ingen header men måske cart. Måske et check hvis vi er på collections.)
+- TODO: Generelt skal være så minimum html som muligt.
+- TODO: Fix det der icon til højre. Virker underligt på mobil versionen.
 
 
 # Hydrogen template: Skeleton
