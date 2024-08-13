@@ -1,5 +1,8 @@
 // https://shopify.dev/docs/api/storefront/2024-04/input-objects/CartLineInput
 // TODO: Play with this until it works
+
+import type { CartApiQueryFragment } from "storefrontapi.generated";
+
 /**
  * cartMutateFragment requirements:
  *
@@ -153,3 +156,5 @@ export const CART_QUERY_FRAGMENT = `#graphql
     height
   }
 ` as const;
+
+export type CartQuery = Promise<CartApiQueryFragment | null>;

@@ -4,11 +4,10 @@ import {
 	NavigationMenuLink,
 	NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Await, Link } from "@remix-run/react";
+import { Await } from "@remix-run/react";
 import { Suspense } from "react";
 import type { HeaderQuery } from "storefrontapi.generated";
 import { useRootLoaderData } from "~/lib/root-data";
-import type { LayoutProps } from "./Layout";
 
 import {
 	CardContent,
@@ -19,11 +18,14 @@ import {
 } from "@/components/ui/card";
 
 import { useOptimisticCart } from "@shopify/hydrogen";
-import { CartButton, CartMenu } from "../Cart/CartPopover";
-import { NavLink } from "../Remix/NavLink";
+import { CartButton } from "../Cart/CartPopover";
+import { NavLinkP } from "../Remix/NavLink";
 import { P } from "../Default/P";
+import type { CartQuery } from "~/graphql/CartQuery";
+import type { LayoutProps } from "./Layout";
 
 type HeaderProps = Pick<LayoutProps, "header" | "cart">;
+
 
 type Viewport = "desktop" | "mobile";
 
@@ -47,31 +49,31 @@ export function Header({
 	const optimisticCart = useOptimisticCart(cart);
 	const pages = [{ title: "collections", url: "collections" }];
 	return (
-		<nav className={`min-w-full max-h-[12dvh] max-w-full ${className}`}>
+		<nav className={`min-w-full max-w-full ${className}`}>
 			<NavigationMenu className="min-w-full max-w-full h-full flex content-start justify-between">
 				<NavigationMenuList className="flex flex-col content-start text-start justify-start">
 					<NavigationMenuItem>
 						<NavigationMenuLink>
-							<NavLink
+							<NavLinkP
 								prefetch="intent"
 								to="/"
 								end
 							>
 								{shop.name}
-							</NavLink>
+							</NavLinkP>
 						</NavigationMenuLink>
 					</NavigationMenuItem>
 					<NavigationMenuItem>
-						<NavLink to={"/cart"}>
+						<NavLinkP to={"/cart"}>
 							<CartButton cart={cart} />
-						</NavLink>
+						</NavLinkP>
 					</NavigationMenuItem>
 					<NavigationMenuItem className="flex gap-2">
 						{pages.map((page) => {
 							return (
-									<NavLink end key={page.title} prefetch="intent" to={page.url}>
+									<NavLinkP end key={page.title} prefetch="intent" to={page.url}>
 										{page.title}
-									</NavLink>
+									</NavLinkP>
 							);
 						})}
 						{(menu || FALLBACK_HEADER_MENU).items.map((item) => {
@@ -86,15 +88,12 @@ export function Header({
 									: item.url;
 							if (url === "/") return;
 							return (
-									<NavLink end key={item.id} prefetch="intent" to={url}>
+									<NavLinkP end key={item.id} prefetch="intent" to={url}>
 											{item.title.toLowerCase()}
-									</NavLink>
+									</NavLinkP>
 							);
 						})}
 					</NavigationMenuItem>
-				</NavigationMenuList>
-				<NavigationMenuList className="flex">
-
 				</NavigationMenuList>
 			</NavigationMenu>
 			{/* 
@@ -149,7 +148,7 @@ export function HeaderMenu({
 	return (
 		<nav className={className} role="navigation">
 			{viewport === "mobile" && (
-				<NavLink
+				<NavLinkP
 					end
 					onClick={closeAside}
 					prefetch="intent"
@@ -157,7 +156,7 @@ export function HeaderMenu({
 					to="/"
 				>
 					Home
-				</NavLink>
+				</NavLinkP>
 			)}
 			{(menu || FALLBACK_HEADER_MENU).items.map((item) => {
 				if (!item.url) return null;
@@ -170,7 +169,7 @@ export function HeaderMenu({
 						? new URL(item.url).pathname
 						: item.url;
 				return (
-					<NavLink
+					<NavLinkP
 						className=""
 						end
 						key={item.id}
@@ -180,7 +179,7 @@ export function HeaderMenu({
 						to={url}
 					>
 						{item.title}
-					</NavLink>
+					</NavLinkP>
 				);
 			})}
 		</nav>

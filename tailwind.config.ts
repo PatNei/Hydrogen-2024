@@ -19,9 +19,6 @@ const config = {
 			xl: "1em",
 			xxl: "1.2em",
 		},
-		fontWeight: {
-			normal:"font-weight:900",
-		},
 		fontFamily: {
 			sans: [
 				"Palatino",

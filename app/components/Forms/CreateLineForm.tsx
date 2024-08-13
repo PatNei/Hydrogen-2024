@@ -28,8 +28,13 @@ export const CreateLineForm = ({
 				],
 			}}
 		>
-			<Button disabled={isOptimistic} type="submit">
-				{isOptimistic ? "Added!" : "Add to cart"}
+			<Button
+				className="w-24"
+				variant={"default"}
+				disabled={isOptimistic}
+				type="submit"
+			>
+				{isOptimistic ? "..." : "ADD"}
 			</Button>
 		</CartForm>
 	);

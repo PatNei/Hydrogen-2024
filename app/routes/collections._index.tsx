@@ -2,6 +2,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { Image, Pagination, getPaginationVariables } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, json } from "@shopify/remix-oxygen";
 import type { CollectionFragment } from "storefrontapi.generated";
+import { H1 } from "~/components/Default/Heading";
 import { COLLECTIONS_QUERY } from "~/graphql/products/CollectionsQuery";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
@@ -21,7 +22,7 @@ export default function Collections() {
 
 	return (
 		<div className="flex flex-col gap-2 mt-4">
-			<h1 className="text-lg">Collections</h1>
+			<H1 className="text-lg">Collections</H1>
 			<Pagination connection={collections}>
 				{({ nodes, isLoading, PreviousLink, NextLink }) => (
 					<div>
@@ -43,7 +44,7 @@ function CollectionsGrid({
 	collections,
 }: { collections: CollectionFragment[] }) {
 	return (
-		<div className="flex flex-col gap-2 ">
+		<div className="flex flex-col gap-1 ">
 			{collections.map((collection, index) => (
 				<CollectionItem
 					key={collection.id}

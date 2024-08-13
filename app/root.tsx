@@ -9,53 +9,15 @@ import {
 	useLoaderData,
 	useRouteError,
 } from "@remix-run/react";
-import {
-	createCartHandler,
-	useNonce,
-	useOptimisticCart,
-} from "@shopify/hydrogen";
+import { useNonce } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, defer } from "@shopify/remix-oxygen";
-import { useState } from "react";
-import { Layout } from "~/components/Main/Layout";
+import type { ReactNode } from "react";
 import favicon from "./assets/favicon.svg";
 import { FOOTER_QUERY, HEADER_QUERY } from "./graphql/shop/ShopQuery";
 import tailwindStyles from "./tailwind.css?url";
-
-/**
- * This is important to avoid re-fetching root queries on sub-navigations
- */
-export const shouldRevalidate: ShouldRevalidateFunction = ({
-	formMethod,
-	currentUrl,
-	nextUrl,
-}) => {
-	// revalidate when a mutation is performed e.g add to cart, login...
-	if (formMethod && formMethod !== "GET") {
-		return true;
-	}
-
-	// revalidate when manually revalidating via useRevalidator
-	if (currentUrl.toString() === nextUrl.toString()) {
-		return true;
-	}
-
-	return false;
-};
-
-export function links() {
-	return [
-		{ rel: "stylesheet", href: tailwindStyles },
-		{
-			rel: "preconnect",
-			href: "https://cdn.shopify.com",
-		},
-		{
-			rel: "preconnect",
-			href: "https://shop.app", // TODO: What is this?
-		},
-		{ rel: "icon", type: "image/svg+xml", href: favicon },
-	];
-}
+import { Header } from "./components/Main/Header";
+import { Layout } from "./components/Main/Layout";
+import { P } from "./components/Default/P";
 
 export async function loader({ context }: LoaderFunctionArgs) {
 	const { storefront } = context;
@@ -139,14 +101,17 @@ export function ErrorBoundary() {
 			</head>
 			<body>
 				<Layout {...rootData}>
-					<div className="route-error">
-						<h1>Oops</h1>
-						<h2>{errorStatus}</h2>
-						{errorMessage && (
-							<fieldset>
-								<pre>{errorMessage}</pre>
-							</fieldset>
-						)}
+					<div className="mx-auto w-[50dvw] text-center text-wrap">
+						<div className="flex flex-col">
+							<h1>This was supposed to happen..</h1>
+							<h2 className="">{errorStatus}</h2>
+							{errorMessage && (
+								<div className="w-full">
+									<P>{errorMessage}</P>
+								</div>
+							)}
+							<h1>however.... just to be safe you should probably reload.</h1>
+						</div>
 					</div>
 				</Layout>
 				<ScrollRestoration nonce={nonce} />
@@ -154,4 +119,40 @@ export function ErrorBoundary() {
 			</body>
 		</html>
 	);
+}
+
+/**
+ * This is important to avoid re-fetching root queries on sub-navigations
+ */
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+	formMethod,
+	currentUrl,
+	nextUrl,
+}) => {
+	// revalidate when a mutation is performed e.g add to cart, login...
+	if (formMethod && formMethod !== "GET") {
+		return true;
+	}
+
+	// revalidate when manually revalidating via useRevalidator
+	if (currentUrl.toString() === nextUrl.toString()) {
+		return true;
+	}
+
+	return false;
+};
+
+export function links() {
+	return [
+		{ rel: "stylesheet", href: tailwindStyles },
+		{
+			rel: "preconnect",
+			href: "https://cdn.shopify.com",
+		},
+		{
+			rel: "preconnect",
+			href: "https://shop.app", // TODO: What is this?
+		},
+		{ rel: "icon", type: "image/svg+xml", href: favicon },
+	];
 }

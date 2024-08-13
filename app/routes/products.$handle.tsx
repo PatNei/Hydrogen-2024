@@ -1,3 +1,4 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
 	Await,
 	type FetcherWithComponents,
@@ -32,12 +33,15 @@ import type {
 	ProductVariantsQuery,
 } from "storefrontapi.generated";
 import { Button } from "~/components/Default/Button";
+import { H1, H2 } from "~/components/Default/Heading";
 import { P } from "~/components/Default/P";
 import { RichText } from "~/components/Default/RichText";
 import { SeperatedBlockQuote } from "~/components/Default/SeperatedBlockQuote";
 import { CreateLineForm } from "~/components/Forms/CreateLineForm";
+import { ImageGrid } from "~/components/Product/ImageGrid";
 import { ProductsGrid } from "~/components/Product/ProductGrid";
 import { ProductImage } from "~/components/Product/ProductImage";
+import { NavLinkP } from "~/components/Remix/NavLink";
 import { PRODUCT_QUERY } from "~/graphql/products/ProductQuery";
 import { VARIANTS_QUERY } from "~/graphql/products/ProductVariantQuery";
 import { useRootLoaderData } from "~/lib/root-data";
@@ -134,50 +138,55 @@ export default function Product() {
 	const optimisticCart = useOptimisticCart(cart);
 	const { selectedVariant } = product;
 	return (
-		<div className="flex flex-col">
-			<ProductsGrid itemAmount={product.images.nodes.length}>
-				{product.images.nodes.map((_image) => {
-					return (
-						<ProductImage
-							key={_image.id}
-							image={_image}
-							productTitle={product.title}
-						/>
-					);
-				})}
-			</ProductsGrid>
-			{/* </div> */}
-			<div className="sticky bottom-0 left-0 pt-4 bg-white">
-				<SeperatedBlockQuote>
-					<P>{product.title}</P>
-					{/* biome-ignore lint/security/noDangerouslySetInnerHtml: We might need to reconsider this but for now it is allowed. Purifying the input could be the way */}
-					<div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
-					<ProductPrice selectedVariant={selectedVariant} />
-				</SeperatedBlockQuote>
-				{/* <div className="flex flex-col max-w-[40dvw] columns-2  w-full relative min-h-[70dvh]"> */}
-				<Await
-					errorElement="There was a problem loading product variants"
-					resolve={variants}
-				>
-					{(data) => {
+		<div className="flex flex-col sm:flex-row gap-24 justify-end ">
+			<ScrollArea className="h-[84dvh] w-full sm:w-4/6 min-w-[28dvw] sm:max-w-[28dvw] mx-auto">
+				<ImageGrid>
+					{product.images.nodes.map((_image) => {
 						return (
-							<VariantSelector
-								handle={product.handle}
-								options={product.options}
-								variants={data.product?.variants.nodes || []}
-							>
-								{({ option }) => (
-									<ProductOptions key={option.name} option={option} />
-								)}
-							</VariantSelector>
+							<ProductImage
+								key={_image.id}
+								image={_image}
+								productTitle={product.title}
+							/>
 						);
-					}}
-				</Await>
-				<CreateLineForm
-					optimisticCart={optimisticCart}
-					selectedVariant={selectedVariant}
-				/>
-			</div>
+					})}
+				</ImageGrid>
+			</ScrollArea>
+			{/* </div> */}
+			<ScrollArea className="h-[84dvh] pt-4 sm:w-2/6 bg-white">
+				<div className="flex flex-col gap-10">
+					<div className="flex flex-col gap-2">
+						<H1>{product.title}</H1>
+						<ProductPrice selectedVariant={selectedVariant} />
+
+						{/* <div className="flex flex-col max-w-[40dvw] columns-2  w-full relative min-h-[70dvh]"> */}
+						<Await
+							errorElement="There was a problem loading product variants"
+							resolve={variants}
+						>
+							{(data) => {
+								return (
+									<VariantSelector
+										handle={product.handle}
+										options={product.options}
+										variants={data.product?.variants.nodes || []}
+									>
+										{({ option }) => <ProductOptions option={option} />}
+									</VariantSelector>
+								);
+							}}
+						</Await>
+						<CreateLineForm
+							optimisticCart={optimisticCart}
+							selectedVariant={selectedVariant}
+						/>
+					</div>
+					<div>
+						{/* biome-ignore lint/security/noDangerouslySetInnerHtml: We might need to reconsider this but for now it is allowed. Purifying the input could be the way */}
+						<P dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+					</div>
+				</div>
+			</ScrollArea>
 		</div>
 	);
 }
@@ -192,44 +201,49 @@ function ProductPrice({
 	return (
 		<div className="flex flex-col">
 			{selectedVariant.compareAtPrice && (
-				<div>
-					<P>SALE!!!!!!!!!!</P>
+				<H2>
+					SALE!!!!!!!!!!
 					<Money
 						className="line-through opacity-30"
 						data={selectedVariant.compareAtPrice}
 					/>
-				</div>
+				</H2>
 			)}
-			<Money className="h-5" data={selectedVariant.price} />
+			<H2>
+				<Money className="h-5" data={selectedVariant.price} />
+			</H2>
 		</div>
 	);
 }
 
 function ProductOptions({ option }: { option: VariantOption }) {
 	return (
-		<div className="product-options" key={option.name}>
-			<h5>{option.name}</h5>
-			<div className="product-options-grid">
+		<fieldset className="w-full">
+			<legend>
+				<H2>{option.name}</H2>
+			</legend>
+			<div className="flex w-full flex-wrap">
 				{option.values.map(({ value, isAvailable, isActive, to }) => {
 					return (
 						<Link
-							className="product-options-item"
+							className={`h-12 min-w-18 w-24 border-[1px] p-1 inline-block ${isActive ? "bg-slate-500" : ""}`}
 							key={option.name + value}
 							prefetch="intent"
 							preventScrollReset
 							replace
 							to={to}
-							style={{
-								border: isActive ? "1px solid black" : "1px solid transparent",
-								opacity: isAvailable ? 1 : 0.3,
-							}}
 						>
-							{value}
+							<P
+								className={"font-bold"}
+								disableLowerCase={true}
+								isActive={isActive}
+							>
+								{value.toUpperCase()}
+							</P>
 						</Link>
 					);
 				})}
 			</div>
-			<br />
-		</div>
+		</fieldset>
 	);
 }

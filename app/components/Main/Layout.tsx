@@ -7,8 +7,8 @@ import type {
 	HeaderQuery,
 } from "storefrontapi.generated";
 import { Header, getHeaderNavLinkStyle } from "~/components/Main/Header";
+import type { CartQuery } from "~/graphql/CartQuery";
 
-export type CartQuery = Promise<CartApiQueryFragment | null>;
 export type LayoutProps = {
 	cart: CartQuery;
 	footer: Promise<FooterQuery>;
@@ -18,9 +18,9 @@ export type LayoutProps = {
 
 export function Layout({ cart, children = null, footer, header }: LayoutProps) {
 	return (
-			<div className="flex gap-1 flex-col pt-16 px-14 h-full">
-					{header && <Header header={header} cart={cart} />}
-					<main>{children}</main>
+		<div className="flex gap-1 flex-col px-14 h-full pt-[4dvh] max-w-full">
+			{header && <Header className="h-[10dvh]" header={header} cart={cart} />}
+				<main className="max-h-[86dvh]">{children}</main>
 			</div>
 	);
 }

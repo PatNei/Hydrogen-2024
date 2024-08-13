@@ -2,9 +2,9 @@ import type { ProductItemFragment } from "storefrontapi.generated";
 import { useVariantUrl } from "~/lib/variants";
 import { SeperatedBlockQuote } from "../Default/SeperatedBlockQuote";
 import { ProductCard } from "./ProductCard";
-import { NavLink } from "@remix-run/react";
 import { Money } from "@shopify/hydrogen-react";
 import { P } from "../Default/P";
+import { NavLinkP } from "../Remix/NavLink";
 
 export function ProductItem({
 	product,
@@ -45,18 +45,14 @@ export function ProductItem({
 					variantUrl={variantUrl}
 				/>
 			)}
-				<NavLink end to={variantUrl}>
-					{({ isActive, isPending }) => {
-						return (
+				<NavLinkP end to={variantUrl}>
 							<div className="w-full flex justify-between	pt-2 p-1">
-								<P className={`w-2/3 ${isPending ? "transform scale-y-[-1]" : ""}`}>
+								<P className={"w-2/3"}>
 									{product.title.toLowerCase()} 
 								</P>
 								<Money className="text-base lowercase" data={product.priceRange.minVariantPrice} />
 							</div>
-						);
-					}}
-				</NavLink>
+				</NavLinkP>
 		</div>
 	);
 }
