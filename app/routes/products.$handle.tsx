@@ -16,6 +16,7 @@ import {
 	getSelectedProductOptions,
 	useOptimisticCart,
 	useOptimisticData,
+	useOptimisticVariant,
 } from "@shopify/hydrogen";
 import type {
 	CartLineInput,
@@ -136,7 +137,10 @@ export default function Product() {
 	const { product, variants } = useLoaderData<typeof loader>();
 	const { cart } = useRootLoaderData();
 	const optimisticCart = useOptimisticCart(cart);
-	const { selectedVariant } = product;
+	const selectedVariant = useOptimisticVariant(
+		product.selectedVariant,
+		variants,
+	);
 	return (
 		<div className="flex flex-col sm:flex-row gap-24 justify-end ">
 			<ScrollArea className="h-[84dvh] w-full sm:w-4/6 min-w-[28dvw] sm:max-w-[28dvw] mx-auto">
@@ -169,7 +173,8 @@ export default function Product() {
 									<VariantSelector
 										handle={product.handle}
 										options={product.options}
-										variants={data.product?.variants.nodes || []}
+										variants={data?.product?.variants.nodes || []}
+										waitForNavigation
 									>
 										{({ option }) => <ProductOptions option={option} />}
 									</VariantSelector>
