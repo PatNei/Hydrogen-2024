@@ -6,7 +6,6 @@ import { useRootLoaderData } from "~/lib/root-data";
 
 export default function Checkout() {
 	const data = useRootLoaderData();
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 
 	return (
 		<div>
