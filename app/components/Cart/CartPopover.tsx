@@ -16,7 +16,7 @@ import { Button } from "../Default/Button";
 import { DeleteLineForm } from "../Forms/DeleteLineForm";
 import { UpdateLineForm } from "../Forms/UpdateLineForm";
 import type { defaultFormProps } from "../Forms/types";
-import type { CartQuery } from "../Main/Layout";
+import type { CartQuery } from "../Main/PageLayout";
 import { ProductImage } from "../Product/ProductImage";
 import { P } from "../Default/P";
 
@@ -47,7 +47,6 @@ export const CartMenu = ({ cart }: CartProps) => {
 		</Popover>
 	);
 };
-
 
 const OptimisticCartContent = ({ cart }: CartProps) => {
 	const optimisticCart = useOptimisticCart(cart);
