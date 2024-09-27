@@ -174,7 +174,7 @@ export default function Product() {
 										handle={product.handle}
 										options={product.options}
 										variants={data?.product?.variants.nodes || []}
-										waitForNavigation
+										waitForNavigation={false}
 									>
 										{({ option }) => <ProductOptions option={option} />}
 									</VariantSelector>

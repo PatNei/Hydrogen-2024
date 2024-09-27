@@ -44,9 +44,6 @@ export async function loader({ context }: LoaderFunctionArgs) {
 		footer: footerPromise,
 		header: await headerPromise,
 		publicStoreDomain,
-		headers: {
-			"Set-Cookie": await context.session.commit(),
-		},
 	});
 }
 
