@@ -22,8 +22,6 @@ export function PageLayout({
 	footer,
 	header,
 }: LayoutProps) {
-	throw new Error();
-
 	return (
 		<div className="flex gap-1 flex-col px-14 h-full pt-[4dvh] max-w-full">
 			{header && <Header className="h-[10dvh]" header={header} cart={cart} />}

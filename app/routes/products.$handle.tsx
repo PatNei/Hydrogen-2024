@@ -172,7 +172,9 @@ export default function Product() {
 								return (
 									<VariantSelector
 										handle={product.handle}
-										options={product.options}
+										options={product.options.filter(
+											(option) => option.values.length > 1,
+										)}
 										variants={data?.product?.variants.nodes || []}
 										waitForNavigation={false}
 									>
