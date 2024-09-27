@@ -15,7 +15,6 @@ import {
 	getStorefrontHeaders,
 } from "@shopify/remix-oxygen";
 import {
-	CART_MUTATION_FRAGMENT,
 	CART_QUERY_FRAGMENT,
 } from "~/graphql/CartQuery";
 import { AppSession } from "~/lib/session";
