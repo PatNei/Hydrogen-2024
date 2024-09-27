@@ -1,11 +1,21 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
 import type { MetaFunction } from "@remix-run/react";
-import { Link } from "@remix-run/react";
-import { CartForm, Image, Money } from "@shopify/hydrogen";
+import { Await, Link } from "@remix-run/react";
+import { CartForm, Image, Money, useOptimisticCart } from "@shopify/hydrogen";
 import type { CartQueryDataReturn } from "@shopify/hydrogen";
 import type { CartLineUpdateInput } from "@shopify/hydrogen/storefront-api-types";
 import { type ActionFunctionArgs, json } from "@shopify/remix-oxygen";
+import { Suspense } from "react";
+import { SlBag } from "react-icons/sl";
 import type { CartApiQueryFragment } from "storefrontapi.generated";
-import type { CartLine } from "~/components/Cart/CartPopover";
+import {
+	CartItem,
+	EmptyCart,
+	type CartLine,
+	type CartLines,
+} from "~/components/Cart/CartPopover";
+import { Button } from "~/components/Default/Button";
+import { P } from "~/components/Default/P";
 import { useRootLoaderData } from "~/lib/root-data";
 import { useVariantUrl } from "~/lib/variants";
 export const meta: MetaFunction = () => {
@@ -16,12 +26,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
 	const { cart } = context;
 	const formData = await request.formData();
 	const { action, inputs } = CartForm.getFormInput(formData);
-	if (!action) {
-		throw new Error("No action provided");
-	}
+
 	let status = 200;
 	let result: CartQueryDataReturn;
-	const _cart = await cart.get();
 	switch (action) {
 		case CartForm.ACTIONS.LinesAdd:
 			result = await cart.addLines(inputs.lines);
@@ -31,7 +38,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
 			break;
 		case CartForm.ACTIONS.LinesRemove:
 			result = await cart.removeLines(inputs.lineIds);
-			console.log("Hi");
 			break;
 		case CartForm.ACTIONS.DiscountCodesUpdate: {
 			const formDiscountCode = inputs.discountCode;
@@ -57,11 +63,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
 			throw new Error(`${action} cart action is not defined`);
 	}
 
-	const cartId = cart.getCartId();
-	if (!cartId) throw new Error("CartId is undefined"); // TODO: Should be a better error
-	const headers = cart.setCartId(cartId);
-	const { cart: cartResult, errors } = result;
+	const headers = cart.setCartId(result.cart.id);
 	const redirectTo = formData.get("redirectTo") ?? null;
+
 	if (typeof redirectTo === "string") {
 		status = 303;
 		headers.set("Location", redirectTo);
@@ -71,11 +75,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
 	return json(
 		{
-			cart: cartResult,
-			errors,
-			analytics: {
-				cartId,
-			},
+			result,
+			analytics: result.cart.id,
 		},
 		{ status, headers },
 	);
@@ -100,61 +101,84 @@ type CartMainProps = {
 };
 
 export function CartMain({ layout, cart }: CartMainProps) {
+	const optimisticCart = useOptimisticCart(cart);
 	// const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
 	// const withDiscount =
 	// 	cart &&
 	// 	Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
 	// const className = `cart-main ${withDiscount ? "with-discount" : ""}`;
 	return (
-		<div>
-			Hello
+		<div className="max-w-44">
+			<div className="max-h-full w-full">
+				<Suspense fallback={<EmptyCart />}>
+					<Await resolve={cart}>
+						{(cart) => {
+							if (!cart?.lines?.edges || cart.lines.edges.length < 1)
+								return <EmptyCart />;
+
+							return (
+								<ScrollArea className="h-min overflow-scroll max-h-[60dvh] rounded-sm w-full pr-2 flex flex-col relative">
+									{cart.lines.edges.map((edge) => {
+										const line = edge.node;
+										return (
+											<CartItem
+												optimisticCart={optimisticCart}
+												key={line.id}
+												line={line}
+											/>
+										);
+									})}
+									<div className="sticky bottom-0 top-0 bg-white flex flex-col pt-4">
+										<P className="">
+											Total: <Money data={cart.cost.totalAmount} />
+										</P>
+										<Button>go to cart</Button>
+										<Button>
+											<Link to={cart.checkoutUrl}>checkout</Link>
+										</Button>
+									</div>
+								</ScrollArea>
+							);
+						}}
+					</Await>
+				</Suspense>
+			</div>
 			{/* <CartEmpty hidden={linesCount} layout={layout} />
 			<CartDetails cart={cart} layout={layout} /> */}
 		</div>
 	);
 }
 
-// function CartDetails({ layout, cart }: CartMainProps) {
-// 	const cartHasItems = !!cart && cart.totalQuantity > 0;
+const CartIcon = ({ amount = 0, text }: { amount?: number; text?: string }) => {
+	const over99 = amount > 99;
+	const over10 = amount > 9;
+	return (
+		<div className="flex w-8 h-8 relative">
+			<SlBag className="w-full h-full" />
+			<div
+				className={`p-[3px] absolute rounded-lg bg-white w-fit max-w-10 -bottom-3 ${
+					over99 ? "-right-2.5" : over10 ? "-right-1.5" : "right-0"
+				}`}
+			>
+				<P className="text-center">
+					{text}
+					{over99 ? "+99" : amount}
+				</P>
+			</div>
+		</div>
+	);
+};
 
-// 	return (
-// 		<div className="cart-details">
-// 			<CartLines lines={cart?.lines} layout={layout} />
-// 			{cartHasItems && (
-// 				<CartSummary cost={cart.cost} layout={layout}>
-// 					<CartDiscounts discountCodes={cart.discountCodes} />
-// 					<CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
-// 				</CartSummary>
-// 			)}
-// 		</div>
-// 	);
-// }
-
-// function CartLines({
-// 	lines,
-// 	layout,
-// }: {
-// 	layout: CartMainProps["layout"];
-// 	lines: CartApiQueryFragment["lines"] | undefined;
-// }) {
-// 	if (!lines) return null;
-
-// 	return (
-// 		<div aria-labelledby="cart-lines">
-// 			<ul>
-// 				{lines.nodes.map((line) => (
-// 					<CartLineItem key={line.id} line={line} layout={layout} />
-// 				))}
-// 			</ul>
-// 		</div>
-// 	);
-// }
+const extractTotalQuantity = (lines: CartLines) => {
+	if (!lines) return 0;
+	return lines.reduce((acc, line) => {
+		return acc + line.quantity;
+	}, 0);
+};
 
 function CartLineItem({
-	layout,
 	line,
 }: {
-	layout: CartMainProps["layout"];
 	line: CartLine;
 }) {
 	const { id, merchandise } = line;
@@ -178,12 +202,6 @@ function CartLineItem({
 				<Link
 					prefetch="intent"
 					to={lineItemUrl}
-					onClick={() => {
-						if (layout === "aside") {
-							// close the drawer
-							window.location.href = lineItemUrl;
-						}
-					}}
 				>
 					<p>
 						<strong>{product.title}</strong>

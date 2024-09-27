@@ -7,7 +7,7 @@ import type {
 	HeaderQuery,
 } from "storefrontapi.generated";
 import { Header, getHeaderNavLinkStyle } from "~/components/Main/Header";
-import type { CartQuery } from "~/graphql/CartQuery";
+import type { export CartQuery } from "~/graphql/CartQuery";
 
 export type LayoutProps = {
 	cart: CartQuery;

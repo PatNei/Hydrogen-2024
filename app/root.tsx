@@ -20,7 +20,7 @@ import { Layout } from "./components/Main/Layout";
 import { P } from "./components/Default/P";
 
 export async function loader({ context }: LoaderFunctionArgs) {
-	const { storefront } = context;
+	const { storefront, cart } = context;
 	const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
 
 	// defer the footer query (below the fold)
@@ -39,19 +39,15 @@ export async function loader({ context }: LoaderFunctionArgs) {
 		},
 	});
 
-	return defer(
-		{
-			cart: context.cart.get(),
-			footer: footerPromise,
-			header: await headerPromise,
-			publicStoreDomain,
+	return defer({
+		cart: cart.get(),
+		footer: footerPromise,
+		header: await headerPromise,
+		publicStoreDomain,
+		headers: {
+			"Set-Cookie": await context.session.commit(),
 		},
-		{
-			headers: {
-				"Set-Cookie": await context.session.commit(),
-			},
-		},
-	);
+	});
 }
 
 export default function App() {

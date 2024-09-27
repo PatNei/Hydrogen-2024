@@ -120,7 +120,7 @@ const OptimisticCartButton = ({ cart }: CartProps) => {
 	return <P>cart {amountOfLines}</P>;
 };
 
-const CartItem = ({
+export const CartItem = ({
 	line,
 	optimisticCart,
 }: { line: CartLine } & Pick<defaultFormProps, "optimisticCart">) => {
@@ -154,7 +154,7 @@ const CartItem = ({
 	);
 };
 
-const EmptyCart = () => {
+export const EmptyCart = () => {
 	return <div>The cart is empty...</div>;
 };
 
