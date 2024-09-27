@@ -14,9 +14,7 @@ import {
 	createRequestHandler,
 	getStorefrontHeaders,
 } from "@shopify/remix-oxygen";
-import {
-	CART_QUERY_FRAGMENT,
-} from "~/graphql/CartQuery";
+import { CART_QUERY_FRAGMENT } from "~/graphql/CartQuery";
 import { AppSession } from "~/lib/session";
 
 /**
@@ -88,7 +86,9 @@ export default {
 			});
 
 			const response = await handleRequest(request);
-
+			if (session.isPending) {
+				response.headers.set("Set-Cookie", await session.commit());
+			}
 			if (response.status === 404) {
 				/**
 				 * Check for redirects only when there's a 404 from the app.

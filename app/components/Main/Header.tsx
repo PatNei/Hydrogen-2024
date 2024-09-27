@@ -22,10 +22,9 @@ import { CartButton } from "../Cart/CartPopover";
 import { NavLinkP } from "../Remix/NavLink";
 import { P } from "../Default/P";
 import type { CartQuery } from "~/graphql/CartQuery";
-import type { LayoutProps } from "./Layout";
+import type { LayoutProps } from "./PageLayout";
 
 type HeaderProps = Pick<LayoutProps, "header" | "cart">;
-
 
 type Viewport = "desktop" | "mobile";
 
@@ -54,11 +53,7 @@ export function Header({
 				<NavigationMenuList className="flex flex-col content-start text-start justify-start">
 					<NavigationMenuItem>
 						<NavigationMenuLink>
-							<NavLinkP
-								prefetch="intent"
-								to="/"
-								end
-							>
+							<NavLinkP prefetch="intent" to="/" end>
 								{shop.name}
 							</NavLinkP>
 						</NavigationMenuLink>
@@ -71,9 +66,9 @@ export function Header({
 					<NavigationMenuItem className="flex gap-2">
 						{pages.map((page) => {
 							return (
-									<NavLinkP end key={page.title} prefetch="intent" to={page.url}>
-										{page.title}
-									</NavLinkP>
+								<NavLinkP end key={page.title} prefetch="intent" to={page.url}>
+									{page.title}
+								</NavLinkP>
 							);
 						})}
 						{(menu || FALLBACK_HEADER_MENU).items.map((item) => {
@@ -88,9 +83,9 @@ export function Header({
 									: item.url;
 							if (url === "/") return;
 							return (
-									<NavLinkP end key={item.id} prefetch="intent" to={url}>
-											{item.title.toLowerCase()}
-									</NavLinkP>
+								<NavLinkP end key={item.id} prefetch="intent" to={url}>
+									{item.title.toLowerCase()}
+								</NavLinkP>
 							);
 						})}
 					</NavigationMenuItem>

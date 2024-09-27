@@ -16,7 +16,12 @@ export type LayoutProps = {
 	children?: React.ReactNode;
 };
 
-export function Layout({ cart, children = null, footer, header }: LayoutProps) {
+export function PageLayout({
+	cart,
+	children = null,
+	footer,
+	header,
+}: LayoutProps) {
 	return (
 		<div className="flex gap-1 flex-col px-14 h-full pt-[4dvh] max-w-full">
 			{header && <Header className="h-[10dvh]" header={header} cart={cart} />}

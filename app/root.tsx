@@ -11,13 +11,12 @@ import {
 } from "@remix-run/react";
 import { useNonce } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, defer } from "@shopify/remix-oxygen";
-import type { ReactNode } from "react";
 import favicon from "./assets/favicon.svg";
 import { FOOTER_QUERY, HEADER_QUERY } from "./graphql/shop/ShopQuery";
 import tailwindStyles from "./tailwind.css?url";
-import { Header } from "./components/Main/Header";
-import { Layout } from "./components/Main/Layout";
+import { PageLayout } from "./components/Main/PageLayout";
 import { P } from "./components/Default/P";
+import type React from "react";
 
 export async function loader({ context }: LoaderFunctionArgs) {
 	const { storefront, cart } = context;
@@ -44,16 +43,16 @@ export async function loader({ context }: LoaderFunctionArgs) {
 		footer: footerPromise,
 		header: await headerPromise,
 		publicStoreDomain,
-		headers: {
-			"Set-Cookie": await context.session.commit(),
-		},
 	});
 }
 
 export default function App() {
+	return <Outlet />;
+}
+
+export function Layout({ children }: { children?: React.ReactNode }) {
 	const nonce = useNonce();
 	const data = useLoaderData<typeof loader>();
-
 	return (
 		<html lang="en">
 			<head>
@@ -63,9 +62,7 @@ export default function App() {
 				<Links />
 			</head>
 			<body className="h-screen">
-				<Layout {...data}>
-					<Outlet />
-				</Layout>
+				{data ? <PageLayout {...data}>{children}</PageLayout> : children}
 				<ScrollRestoration nonce={nonce} />
 				<Scripts nonce={nonce} />
 			</body>
@@ -75,8 +72,6 @@ export default function App() {
 
 export function ErrorBoundary() {
 	const error = useRouteError();
-	const rootData = useLoaderData<typeof loader>();
-	const nonce = useNonce();
 	let errorMessage = "Unknown error";
 	let errorStatus = 500;
 
@@ -88,32 +83,18 @@ export function ErrorBoundary() {
 	}
 
 	return (
-		<html lang="en">
-			<head>
-				<meta charSet="utf-8" />
-				<meta name="viewport" content="width=device-width,initial-scale=1" />
-				<Meta />
-				<Links />
-			</head>
-			<body>
-				<Layout {...rootData}>
-					<div className="mx-auto w-[50dvw] text-center text-wrap">
-						<div className="flex flex-col">
-							<h1>This was supposed to happen..</h1>
-							<h2 className="">{errorStatus}</h2>
-							{errorMessage && (
-								<div className="w-full">
-									<P>{errorMessage}</P>
-								</div>
-							)}
-							<h1>however.... just to be safe you should probably reload.</h1>
-						</div>
+		<div className="mx-auto w-[50dvw] text-center text-wrap">
+			<div className="flex flex-col">
+				<h1>This was supposed to happen..</h1>
+				<h2 className="">{errorStatus}</h2>
+				{errorMessage && (
+					<div className="w-full">
+						<P>{errorMessage}</P>
 					</div>
-				</Layout>
-				<ScrollRestoration nonce={nonce} />
-				<Scripts nonce={nonce} />
-			</body>
-		</html>
+				)}
+				<h1>however.... just to be safe you should probably reload.</h1>
+			</div>
+		</div>
 	);
 }
 
