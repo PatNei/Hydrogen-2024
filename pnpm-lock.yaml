@@ -112,8 +112,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
       '@total-typescript/ts-reset':
-        specifier: ^0.4.2
-        version: 0.4.2
+        specifier: ^0.6.1
+        version: 0.6.1
       '@types/react':
         specifier: ^18.2.22
         version: 18.3.10
@@ -2397,8 +2397,8 @@ packages:
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
     engines: {node: '>=14.16'}
 
-  '@total-typescript/ts-reset@0.4.2':
-    resolution: {integrity: sha512-vqd7ZUDSrXFVT1n8b2kc3LnklncDQFPvR58yUS1kEP23/nHPAO9l1lMjUfnPrXYYk4Hj54rrLKMW5ipwk7k09A==}
+  '@total-typescript/ts-reset@0.6.1':
+    resolution: {integrity: sha512-cka47fVSo6lfQDIATYqb/vO1nvFfbPw7uWLayIXIhGETj0wcOOlrlkobOMDNQOFr9QOafegUPq13V2+6vtD7yg==}
 
   '@ts-morph/common@0.21.0':
     resolution: {integrity: sha512-ES110Mmne5Vi4ypUKrtVQfXFDtCsDXiUiGxF6ILVlE90dDD4fdpC1LSjydl/ml7xJWKSDZwUYD2zkOePMSrPBA==}
@@ -8949,7 +8949,7 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
-  '@total-typescript/ts-reset@0.4.2': {}
+  '@total-typescript/ts-reset@0.6.1': {}
 
   '@ts-morph/common@0.21.0':
     dependencies:
