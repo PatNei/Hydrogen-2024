@@ -9,3 +9,12 @@ node_modules
 
 # Million Lint
 .million
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
