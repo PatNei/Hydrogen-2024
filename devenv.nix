@@ -5,12 +5,17 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git ];
+  packages = [ 
+    pkgs.git
+    pkgs.shopify-cli
+   ];
 
   # https://devenv.sh/languages/
   # languages.rust.enable = true;
   languages.javascript.enable = true;
   languages.typescript.enable = true;
+  languages.javascript.npm.enable = true;
+  languages.javascript.npm.package = pkgs.nodejs_18;
   languages.javascript.pnpm.enable = true;
   
   # https://devenv.sh/processes/
@@ -26,7 +31,7 @@
 
   enterShell = ''
     hello
-    git --version
+    git --version | grep --color=auto "${pkgs.git.version}"
   '';
 
   # https://devenv.sh/tasks/
