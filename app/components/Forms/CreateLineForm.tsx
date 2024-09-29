@@ -9,7 +9,7 @@ export const CreateLineForm = ({
 }: {
 	selectedVariant: ProductFragment["selectedVariant"];
 } & Pick<defaultFormProps, "optimisticCart">) => {
-	const amount = 9;
+	const amount = 1;
 	const isOptimistic = optimisticCart.isOptimistic;
 	return (
 		<CartForm
