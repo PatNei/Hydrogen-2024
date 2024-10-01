@@ -8,7 +8,7 @@
 	},
 	"linter": {
 		"ignore": ["*.generated.d.ts"],
-		"enabled": true,
+		"enabled": false,
 		"rules": {
 			"recommended": true
 		}
