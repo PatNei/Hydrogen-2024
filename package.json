@@ -21,7 +21,7 @@
 		"@radix-ui/react-slot": "^1.1.0",
 		"@remix-run/react": "^2.12.1",
 		"@remix-run/server-runtime": "^2.12.1",
-		"@shopify/cli": "^3.67.2",
+		"@shopify/cli": "^3.67.3",
 		"@shopify/cli-hydrogen": "^8.4.4",
 		"@shopify/hydrogen": "^2024.7.8",
 		"@shopify/remix-oxygen": "^2.0.8",
