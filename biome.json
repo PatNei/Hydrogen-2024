@@ -7,7 +7,7 @@
 		"ignore": ["*.generated.d.ts"]
 	},
 	"linter": {
-		"ignore": ["*.generated.d.ts"],
+		"ignore": ["*.generated.d.ts", "@/"],
 		"enabled": false,
 		"rules": {
 			"recommended": true
