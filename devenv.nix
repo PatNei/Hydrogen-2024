@@ -30,7 +30,6 @@
   '';
 
   enterShell = ''
-    zsh -l
     git --version | grep --color=auto "${pkgs.git.version}"
   '';
 
