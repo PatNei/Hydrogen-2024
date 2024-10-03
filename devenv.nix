@@ -7,16 +7,15 @@
   # https://devenv.sh/packages/
   packages = [ 
     pkgs.git
-    pkgs.shopify-cli
+    # pkgs.shopify-cli
+    pkgs.nix-ld
    ];
-
   # https://devenv.sh/languages/
   # languages.rust.enable = true;
   languages.javascript.enable = true;
   languages.typescript.enable = true;
   languages.javascript.npm.enable = true;
-  languages.javascript.npm.package = pkgs.nodejs_18;
-  languages.javascript.pnpm.enable = true;
+  languages.javascript.bun.enable = true;
   
   # https://devenv.sh/processes/
   # processes.cargo-watch.exec = "cargo-watch";

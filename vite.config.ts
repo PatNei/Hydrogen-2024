@@ -6,9 +6,11 @@ import { defineConfig } from "vite";
 import biomePlugin from "vite-plugin-biome";
 import tsconfigPaths from "vite-tsconfig-paths";
 const _plugins = [
-	hydrogen(),
-	oxygen(),
-	remixDevTools(),
+	hydrogen({
+
+	}),
+	oxygen({
+	}),
 	remix({
 		presets: [hydrogen.preset()],
 		future: {
@@ -18,18 +20,11 @@ const _plugins = [
 		},
 	}),
 	tsconfigPaths(),
-	biomePlugin({
-		mode: "lint", // Be carefull with check and format as it uses a lot of ressources, better to just have it lint shit.
-		files: ".",
-		applyFixes: false,
-	}),
 ];
 export default defineConfig({
 	ssr: {
 		optimizeDeps: {
 			include: [
-				"date-fns/add/index.js",
-				"date-fns/formatDistance/index.js",
 				"react-diff-viewer-continued",
 				"beautify",
 			],

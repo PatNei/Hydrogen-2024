@@ -1,14 +1,17 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+	"$schema": "https://biomejs.dev/schemas/1.9.3/schema.json",
 	"organizeImports": {
-		"enabled": true
+		"enabled": false
 	},
 	"formatter": {
-		"ignore": ["*.generated.d.ts"]
+		"ignore": ["*.generated.d.ts"],
+		"include": ["app"],
+		"enabled": false
 	},
 	"linter": {
 		"ignore": ["*.generated.d.ts", "@/"],
 		"enabled": false,
+		"include": ["app"],
 		"rules": {
 			"recommended": true
 		}
