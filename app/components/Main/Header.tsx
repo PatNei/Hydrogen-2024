@@ -38,13 +38,11 @@ export function getHeaderNavLinkStyle({
 }
 
 export function Header({
-	header,
-	cart,
 	className,
-}: HeaderProps & { className?: string }) {
+}: { className?: string }) {
+	const { publicStoreDomain,header,cart } = useRootLoaderData();
 	const { shop, menu } = header;
-	const primaryDomainUrl = header.shop.primaryDomain.url;
-	const { publicStoreDomain } = useRootLoaderData();
+	const primaryDomainUrl = shop.primaryDomain.url;
 	const optimisticCart = useOptimisticCart(cart);
 	const pages = [{ title: "collections", url: "collections" }];
 	return (
@@ -121,65 +119,65 @@ export const CartItem = () => {
 	);
 };
 
-export function HeaderMenu({
-	menu,
-	primaryDomainUrl,
-	viewport,
-}: {
-	menu: HeaderProps["header"]["menu"];
-	primaryDomainUrl: HeaderQuery["shop"]["primaryDomain"]["url"];
-	viewport: Viewport;
-}) {
-	const { publicStoreDomain } = useRootLoaderData();
-	const className = `header-menu-${viewport}`;
+// export function HeaderMenu({
+// 	menu,
+// 	primaryDomainUrl,
+// 	viewport,
+// }: {
+// 	menu: HeaderProps["header"]["menu"];
+// 	primaryDomainUrl: HeaderQuery["shop"]["primaryDomain"]["url"];
+// 	viewport: Viewport;
+// }) {
+// 	const { publicStoreDomain } = useRootLoaderData();
+// 	const className = `header-menu-${viewport}`;
 
-	function closeAside(event: React.MouseEvent<HTMLAnchorElement>) {
-		if (viewport === "mobile") {
-			event.preventDefault();
-			window.location.href = event.currentTarget.href;
-		}
-	}
+// 	function closeAside(event: React.MouseEvent<HTMLAnchorElement>) {
+// 		if (viewport === "mobile") {
+// 			event.preventDefault();
+// 			window.location.href = event.currentTarget.href;
+// 		}
+// 	}
 
-	return (
-		<nav className={className} role="navigation">
-			{viewport === "mobile" && (
-				<NavLinkP
-					end
-					onClick={closeAside}
-					prefetch="intent"
-					style={activeLinkStyle}
-					to="/"
-				>
-					Home
-				</NavLinkP>
-			)}
-			{(menu || FALLBACK_HEADER_MENU).items.map((item) => {
-				if (!item.url) return null;
+// 	return (
+// 		<nav className={className} role="navigation">
+// 			{viewport === "mobile" && (
+// 				<NavLinkP
+// 					end
+// 					onClick={closeAside}
+// 					prefetch="intent"
+// 					style={activeLinkStyle}
+// 					to="/"
+// 				>
+// 					Home
+// 				</NavLinkP>
+// 			)}
+// 			{(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+// 				if (!item.url) return null;
 
-				// if the url is internal, we strip the domain
-				const url =
-					item.url.includes("myshopify.com") ||
-					item.url.includes(publicStoreDomain) ||
-					item.url.includes(primaryDomainUrl)
-						? new URL(item.url).pathname
-						: item.url;
-				return (
-					<NavLinkP
-						className=""
-						end
-						key={item.id}
-						onClick={closeAside}
-						prefetch="intent"
-						style={activeLinkStyle}
-						to={url}
-					>
-						{item.title}
-					</NavLinkP>
-				);
-			})}
-		</nav>
-	);
-}
+// 				// if the url is internal, we strip the domain
+// 				const url =
+// 					item.url.includes("myshopify.com") ||
+// 					item.url.includes(publicStoreDomain) ||
+// 					item.url.includes(primaryDomainUrl)
+// 						? new URL(item.url).pathname
+// 						: item.url;
+// 				return (
+// 					<NavLinkP
+// 						className=""
+// 						end
+// 						key={item.id}
+// 						onClick={closeAside}
+// 						prefetch="intent"
+// 						style={activeLinkStyle}
+// 						to={url}
+// 					>
+// 						{item.title}
+// 					</NavLinkP>
+// 				);
+// 			})}
+// 		</nav>
+// 	);
+// }
 
 function HeaderCtas({ cart }: Pick<HeaderProps, "cart">) {
 	return (

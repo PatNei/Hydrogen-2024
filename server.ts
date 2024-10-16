@@ -1,108 +1,70 @@
 // @ts-ignore
 // Virtual entry point for the app
-import * as remixBuild from "virtual:remix/server-build";
-import {
-	cartGetIdDefault,
-	cartSetIdDefault,
-	createCartHandler,
-	createCustomerAccountClient,
-	createStorefrontClient,
-	storefrontRedirect,
-} from "@shopify/hydrogen";
-import {
-	type AppLoadContext,
-	createRequestHandler,
-	getStorefrontHeaders,
-} from "@shopify/remix-oxygen";
-import { CART_QUERY_FRAGMENT } from "~/graphql/CartQuery";
-import { AppSession } from "~/lib/session";
+import * as remixBuild from 'virtual:remix/server-build';
+import {storefrontRedirect} from '@shopify/hydrogen';
+import {createRequestHandler} from '@shopify/remix-oxygen';
+import {createAppLoadContext} from '~/lib/context';
 
 /**
  * Export a fetch handler in module format.
  */
 export default {
-	async fetch(
-		request: Request,
-		env: Env,
-		executionContext: ExecutionContext,
-	): Promise<Response> {
-		try {
-			/**
-			 * Open a cache instance in the worker and a custom session instance.
-			 */
-			if (!env?.SESSION_SECRET) {
-				throw new Error("SESSION_SECRET environment variable is not set");
-			}
+  async fetch(
+    request: Request,
+    env: Env,
+    executionContext: ExecutionContext,
+  ): Promise<Response> {
+    try {
 
-			const waitUntil = executionContext.waitUntil.bind(executionContext);
-			const [cache, session] = await Promise.all([
-				caches.open("hydrogen"),
-				AppSession.init(request, [env.SESSION_SECRET]),
-			]);
+      /**
+       * Open a cache instance in the worker and a custom session instance.
+       */
+      if (!env?.SESSION_SECRET) {
+        throw new Error('SESSION_SECRET environment variable is not set');
+      }
+      const appLoadContext = await createAppLoadContext(
+        request,
+        env,
+        executionContext,
+      );
 
-			/**
-			 * Create Hydrogen's Storefront client.
-			 */
-			const { storefront } = createStorefrontClient({
-				cache,
-				waitUntil,
-				i18n: { language: "EN", country: "US" },
-				publicStorefrontToken: env.PUBLIC_STOREFRONT_API_TOKEN,
-				privateStorefrontToken: env.PRIVATE_STOREFRONT_API_TOKEN,
-				storeDomain: env.PUBLIC_STORE_DOMAIN,
-				storefrontId: env.PUBLIC_STOREFRONT_ID,
-				storefrontHeaders: getStorefrontHeaders(request),
-			});
+      /**
+       * Create a Remix request handler and pass
+       * Hydrogen's Storefront client to the loader context.
+       */
+      const handleRequest = createRequestHandler({
+        build: remixBuild,
+        mode: process.env.NODE_ENV,
+        getLoadContext: () => appLoadContext,
+      });
 
-			/*
-			 * Create a cart handler that will be used to
-			 * create and update the cart in the session.
-			 */
-			const cart = createCartHandler({
-				storefront,
-				getCartId: cartGetIdDefault(request.headers),
-				setCartId: cartSetIdDefault({
-					httponly: true,
-					path: "cart",
-					maxage: 60 * 60 * 24 * 365, // One year expiry
-				}),
-				cartQueryFragment: CART_QUERY_FRAGMENT,
-			});
+      const response = await handleRequest(request);
 
-			/**
-			 * Create a Remix request handler and pass
-			 * Hydrogen's Storefront client to the loader context.
-			 */
-			const handleRequest = createRequestHandler({
-				build: remixBuild,
-				mode: process.env.NODE_ENV,
-				getLoadContext: (): AppLoadContext => ({
-					session,
-					storefront,
-					cart,
-					env,
-					waitUntil,
-				}),
-			});
+      if (appLoadContext.session.isPending) {
+        response.headers.set(
+          'Set-Cookie',
+          await appLoadContext.session.commit(),
+        );
+      }
 
-			const response = await handleRequest(request);
-			if (session.isPending) {
-				response.headers.set("Set-Cookie", await session.commit());
-			}
-			if (response.status === 404) {
-				/**
-				 * Check for redirects only when there's a 404 from the app.
-				 * If the redirect doesn't exist, then `storefrontRedirect`
-				 * will pass through the 404 response.
-				 */
-				return storefrontRedirect({ request, response, storefront });
-			}
+      if (response.status === 404) {
+        /**
+         * Check for redirects only when there's a 404 from the app.
+         * If the redirect doesn't exist, then `storefrontRedirect`
+         * will pass through the 404 response.
+         */
+        return storefrontRedirect({
+          request,
+          response,
+          storefront: appLoadContext.storefront,
+        });
+      }
 
-			return response;
-		} catch (error) {
-			// eslint-disable-next-line no-console
-			console.error(error);
-			return new Response("An unexpected error occurred", { status: 500 });
-		}
-	},
+      return response;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      return new Response('An unexpected error occurred', {status: 500});
+    }
+  },
 };

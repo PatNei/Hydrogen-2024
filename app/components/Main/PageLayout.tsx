@@ -8,23 +8,21 @@ import type {
 } from "storefrontapi.generated";
 import { Header, getHeaderNavLinkStyle } from "~/components/Main/Header";
 import type { CartQuery } from "~/graphql/CartQuery";
+import { RootLoader } from "~/root";
 
 export type LayoutProps = {
 	cart: CartQuery;
 	footer: Promise<FooterQuery>;
-	header: HeaderQuery;
+	header: Promise<HeaderQuery>;
 	children?: React.ReactNode;
 };
 
 export function PageLayout({
-	cart,
-	children = null,
-	footer,
-	header,
-}: LayoutProps) {
+	children
+}: {children?:React.ReactNode}) {
 	return (
 		<div className="flex gap-1 flex-col px-14 h-full pt-[4dvh] max-w-full">
-			{header && <Header className="h-[10dvh]" header={header} cart={cart} />}
+			<Header className="h-[10dvh]" />
 			<main className="max-h-[86dvh]">{children}</main>
 		</div>
 	);

@@ -1,9 +1,9 @@
-import type { HydrogenSession } from "@shopify/hydrogen";
+import type {HydrogenSession} from '@shopify/hydrogen';
 import {
-	type Session,
-	type SessionStorage,
-	createCookieSessionStorage,
-} from "@shopify/remix-oxygen";
+  createCookieSessionStorage,
+  type SessionStorage,
+  type Session,
+} from '@shopify/remix-oxygen';
 
 /**
  * This is a custom session implementation for your Hydrogen shop.
@@ -11,61 +11,62 @@ import {
  * swap out the cookie-based implementation with something else!
  */
 export class AppSession implements HydrogenSession {
-	#sessionStorage;
-	#session;
-	public isPending = false;
+  public isPending = false;
 
-	constructor(sessionStorage: SessionStorage, session: Session) {
-		this.#sessionStorage = sessionStorage;
-		this.#session = session;
-	}
+  #sessionStorage;
+  #session;
 
-	static async init(request: Request, secrets: string[]) {
-		const storage = createCookieSessionStorage({
-			cookie: {
-				name: "session",
-				httpOnly: true,
-				path: "/",
-				sameSite: "lax",
-				secrets,
-			},
-		});
+  constructor(sessionStorage: SessionStorage, session: Session) {
+    this.#sessionStorage = sessionStorage;
+    this.#session = session;
+  }
 
-		const session = await storage
-			.getSession(request.headers.get("Cookie"))
-			.catch(() => storage.getSession());
+  static async init(request: Request, secrets: string[]) {
+    const storage = createCookieSessionStorage({
+      cookie: {
+        name: 'session',
+        httpOnly: true,
+        path: '/',
+        sameSite: 'lax',
+        secrets,
+      },
+    });
 
-		return new AppSession(storage, session);
-	}
+    const session = await storage
+      .getSession(request.headers.get('Cookie'))
+      .catch(() => storage.getSession());
 
-	get has() {
-		return this.#session.has;
-	}
+    return new this(storage, session);
+  }
 
-	get get() {
-		return this.#session.get;
-	}
+  get has() {
+    return this.#session.has;
+  }
 
-	get flash() {
-		return this.#session.flash;
-	}
+  get get() {
+    return this.#session.get;
+  }
 
-	get unset() {
-		this.isPending = true;
-		return this.#session.unset;
-	}
+  get flash() {
+    return this.#session.flash;
+  }
 
-	get set() {
-		this.isPending = true;
-		return this.#session.set;
-	}
+  get unset() {
+    this.isPending = true;
+    return this.#session.unset;
+  }
 
-	destroy() {
-		return this.#sessionStorage.destroySession(this.#session);
-	}
+  get set() {
+    this.isPending = true;
+    return this.#session.set;
+  }
 
-	commit() {
-		this.isPending = false;
-		return this.#sessionStorage.commitSession(this.#session);
-	}
+  destroy() {
+    return this.#sessionStorage.destroySession(this.#session);
+  }
+
+  commit() {
+    this.isPending = false;
+    return this.#sessionStorage.commitSession(this.#session);
+  }
 }
