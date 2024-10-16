@@ -1,5 +1,7 @@
 { pkgs, lib, config, inputs, ... }:
-
+let
+  unstable = import inputs.unstable { system = pkgs.stdenv.system; };
+in
 {
   # https://devenv.sh/basics/
   env.GREET = "devenv";
@@ -7,9 +9,12 @@
   # https://devenv.sh/packages/
   packages = [ 
     pkgs.git
-    # pkgs.shopify-cli
+    unstable.shopify-cli
     pkgs.nix-ld
+    pkgs.xdg-utils # NEEDS TO BE AVAILABLE TO SHOPIFY
+
    ];
+  dotenv.enable = true;
   # https://devenv.sh/languages/
   # languages.rust.enable = true;
   languages.javascript.enable = true;
