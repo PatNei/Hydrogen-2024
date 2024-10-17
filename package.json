@@ -41,7 +41,7 @@
 		"vite-plugin-biome": "^1.0.12"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.2",
+		"@biomejs/biome": "^1.9.3",
 		"@graphql-codegen/cli": "5.0.2",
 		"@remix-run/dev": "^2.12.1",
 		"@shopify/hydrogen-codegen": "^0.3.1",
