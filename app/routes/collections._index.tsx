@@ -7,7 +7,7 @@ import { COLLECTIONS_QUERY } from "~/graphql/products/CollectionsQuery";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
 	const paginationVariables = getPaginationVariables(request, {
-		pageBy: 4,
+		pageBy: 20,
 	});
 
 	const { collections } = await context.storefront.query(COLLECTIONS_QUERY, {
@@ -44,14 +44,12 @@ function CollectionsGrid({
 	collections,
 }: { collections: CollectionFragment[] }) {
 	return (
-		<div className="flex flex-col gap-1 ">
-			{collections.map((collection, index) => (
-				<CollectionItem
-					key={collection.id}
-					collection={collection}
-					index={index}
-				/>
-			))}
+		<div className="flex flex-col gap-1 max-w-10">
+			{collections.map((collection, index) => {
+				if (collection.products.nodes.length < 1) return
+				return <Link to={`/collections/${collection.handle}`}>{collection.title}</Link>
+			})
+			}
 		</div>
 	);
 }
@@ -65,7 +63,7 @@ function CollectionItem({
 }) {
 	return (
 		<Link
-			className="flex gap-2"
+			className="flex flew-row gap-2"
 			key={collection.id}
 			to={`/collections/${collection.handle}`}
 			prefetch="intent"
