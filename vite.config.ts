@@ -6,11 +6,8 @@ import { defineConfig } from "vite";
 import biomePlugin from "vite-plugin-biome";
 import tsconfigPaths from "vite-tsconfig-paths";
 const _plugins = [
-	hydrogen({
-
-	}),
-	oxygen({
-	}),
+	hydrogen(),
+	oxygen(),
 	remix({
 		presets: [hydrogen.preset()],
 		future: {

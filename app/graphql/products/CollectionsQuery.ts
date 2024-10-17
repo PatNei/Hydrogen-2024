@@ -12,6 +12,11 @@ export const COLLECTIONS_QUERY = `#graphql
       width
       height
     }
+    products(first: 1) { # to count if a collection is empty, then we don't show it
+      nodes {
+        handle
+      }
+    }
   }
   query StoreCollections(
     $country: CountryCode

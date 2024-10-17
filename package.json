@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "shopify hydrogen build --codegen",
-		"dev": "shopify hydrogen dev --codegen",
+		"dev": "shopify hydrogen dev --codegen --env .env",
 		"preview": "run build && shopify hydrogen preview",
 		"typecheck": "tsc --noEmit",
 		"codegen": "shopify hydrogen codegen"

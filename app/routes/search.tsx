@@ -2,11 +2,6 @@ import { type MetaFunction, useLoaderData } from "@remix-run/react";
 import { getPaginationVariables } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, defer } from "@shopify/remix-oxygen";
 
-import {
-	NoSearchResults,
-	SearchForm,
-	SearchResults,
-} from "~/deprecated/Search";
 
 export const meta: MetaFunction = () => {
 	return [{ title: "Hydrogen | Search" }];
@@ -57,15 +52,6 @@ export default function SearchPage() {
 	return (
 		<div className="search">
 			<h1>Search</h1>
-			<SearchForm searchTerm={searchTerm} />
-			{!searchTerm || !searchResults.totalResults ? (
-				<NoSearchResults />
-			) : (
-				<SearchResults
-					results={searchResults.results}
-					searchTerm={searchTerm}
-				/>
-			)}
 		</div>
 	);
 }
