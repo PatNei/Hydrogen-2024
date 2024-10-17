@@ -12,7 +12,7 @@
 		"codegen": "shopify hydrogen codegen"
 	},
 	"dependencies": {
-		"@ast-grep/napi": "^0.27.2",
+		"@ast-grep/napi": "^0.28.0",
 		"@radix-ui/react-aspect-ratio": "^1.0.3",
 		"@radix-ui/react-navigation-menu": "^1.1.4",
 		"@radix-ui/react-popover": "^1.1.2",
