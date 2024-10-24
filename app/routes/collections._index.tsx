@@ -1,82 +1,86 @@
-import { Link, useLoaderData } from "@remix-run/react";
-import { Image, Pagination, getPaginationVariables } from "@shopify/hydrogen";
+import { Link, type MetaFunction, useLoaderData } from "@remix-run/react";
+import { Pagination, getPaginationVariables } from "@shopify/hydrogen";
 import { type LoaderFunctionArgs, json } from "@shopify/remix-oxygen";
-import type { CollectionFragment } from "storefrontapi.generated";
 import { H1 } from "~/components/Default/Heading";
-import { COLLECTIONS_QUERY } from "~/graphql/products/CollectionsQuery";
 
-export async function loader({ context, request }: LoaderFunctionArgs) {
-	const paginationVariables = getPaginationVariables(request, {
-		pageBy: 20,
+export const meta: MetaFunction = () => {
+	return [{ title: "Hydrogen | Blogs" }];
+};
+
+export const loader = async ({
+	request,
+	context: { storefront },
+}: LoaderFunctionArgs) => {
+	// const paginationVariables = getPaginationVariables(request, {
+	// 	pageBy: 10,
+	// });
+
+	const { blog } = await storefront.query(COLLECTIONS_BLOG_QUERY, {
+		variables: {
+			handle: "collections",
+			// ...paginationVariables,
+		},
 	});
 
-	const { collections } = await context.storefront.query(COLLECTIONS_QUERY, {
-		variables: paginationVariables,
-	});
+	return json({ blog });
+};
 
-	return json({ collections });
-}
-
-export default function Collections() {
-	const { collections } = useLoaderData<typeof loader>();
+export default function Blogs() {
+	const { blog } = useLoaderData<typeof loader>();
 
 	return (
-		<div className="flex flex-col gap-2 mt-4">
-			<H1 className="text-lg">Collections</H1>
-			<Pagination connection={collections}>
-				{({ nodes, isLoading, PreviousLink, NextLink }) => (
-					<div>
-						<PreviousLink>
-							{isLoading ? "Loading..." : <span>↑ Load previous</span>}
-						</PreviousLink>
-						<CollectionsGrid collections={nodes} />
-						<NextLink>
-							{isLoading ? "Loading..." : <span>Load more ↓</span>}
-						</NextLink>
-					</div>
-				)}
-			</Pagination>
+		<div className="blogs">
+			<H1>Collections</H1>
+			<div>
+				<div>
+					{blog?.articles.nodes.map((node) => {
+						return <Link to={`/collections/${node.handle}`}><div>{node.title}</div></Link>
+					})}
+				</div>
+				{/* <Pagination connection={blog}>
+					{({ nodes, isLoading, PreviousLink, NextLink }) => {
+						return (
+							<>
+								<PreviousLink>
+									{isLoading ? "Loading..." : <span>↑ Load previous</span>}
+								</PreviousLink>
+								{nodes.map((blog) => {
+									return (
+										<Link
+											className="blog"
+											key={blog.handle}
+											prefetch="intent"
+											to={`/blogs/${blog.handle}`}
+										>
+											<h2>{blog.title}</h2>
+										</Link>
+									);
+								})}
+								<NextLink>
+									{isLoading ? "Loading..." : <span>Load more ↓</span>}
+								</NextLink>
+							</>
+						);
+					}}
+				</Pagination> */}
+			</div>
 		</div>
 	);
 }
 
-function CollectionsGrid({
-	collections,
-}: { collections: CollectionFragment[] }) {
-	return (
-		<div className="flex flex-col gap-1 max-w-10">
-			{collections.map((collection, index) => {
-				if (collection.products.nodes.length < 1) return
-				return <Link to={`/collections/${collection.handle}`}>{collection.title}</Link>
-			})
+// NOTE: https://shopify.dev/docs/api/storefront/latest/objects/blog
+const COLLECTIONS_BLOG_QUERY = `#graphql
+  query CollectionBlog(
+	$handle: String
+  ) {
+	blog(handle: $handle) {
+		articles(first: 250) {
+			nodes {
+				id
+				title
+				handle
 			}
-		</div>
-	);
-}
-
-function CollectionItem({
-	collection,
-	index,
-}: {
-	collection: CollectionFragment;
-	index: number;
-}) {
-	return (
-		<Link
-			className="flex flew-row gap-2"
-			key={collection.id}
-			to={`/collections/${collection.handle}`}
-			prefetch="intent"
-		>
-			{collection?.image && (
-				<Image
-					alt={collection.image.altText || collection.title}
-					aspectRatio="1/1"
-					data={collection.image}
-					loading={index < 3 ? "eager" : undefined}
-				/>
-			)}
-			<h5>{collection.title}</h5>
-		</Link>
-	);
-}
+		}
+  	}
+  }
+` as const;
